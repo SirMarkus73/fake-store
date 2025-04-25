@@ -2,10 +2,12 @@
   "name": "fake-store",
   "module": "index.ts",
   "type": "module",
-  "workspaces": [
-    "src/*"
-  ],
+  "workspaces": ["src/*"],
+  "scripts": {
+    "check": "biome check --fix"
+  },
   "devDependencies": {
+    "@biomejs/biome": "1.9.4",
     "@types/bun": "latest"
   },
   "peerDependencies": {
