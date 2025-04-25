@@ -4,7 +4,8 @@
   "type": "module",
   "workspaces": ["src/*"],
   "scripts": {
-    "check": "biome check --fix"
+    "check": "biome check --fix",
+    "server:dev": "cd src/server;bun run dev"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
