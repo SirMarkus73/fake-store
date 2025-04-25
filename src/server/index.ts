@@ -1,12 +1,21 @@
 import express from 'express';
 
+import { productsRouter } from './routes/products';
+import { json } from 'express';
+
 const app = express();
 const PORT = 3000;
+
+
+
+app.use(json())
 
 // Basic route
 app.get('/', (req, res) => {
     res.send('Welcome to the Fake Store API!');
 });
+
+app.use("/products", productsRouter)
 
 // Start the server
 app.listen(PORT, () => {
