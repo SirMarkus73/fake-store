@@ -5,8 +5,8 @@ import type { Request, Response } from "express"
 export class ProductsController {
   productsModel = new ProductsModel()
 
-  getAll = (_: Request, res: Response) => {
-    const products = this.productsModel.getAll()
+  getAll = async (_: Request, res: Response) => {
+    const products = await this.productsModel.getAll()
 
     res.status(200).json({
       products,
@@ -14,7 +14,7 @@ export class ProductsController {
     })
   }
 
-  getById = (req: Request, res: Response) => {
+  getById = async (req: Request, res: Response) => {
     const id = req.params.id
 
     const parsedId = z.coerce.number().safeParse(id)
@@ -29,7 +29,7 @@ export class ProductsController {
     }
 
     try {
-      const product = this.productsModel.getById(parsedId.data)
+      const product = await this.productsModel.getById(parsedId.data)
 
       res.status(200).json({
         products: [product],
@@ -44,7 +44,7 @@ export class ProductsController {
     }
   }
 
-  post = (req: Request, res: Response) => {
+  post = async (req: Request, res: Response) => {
     const bodySchema = z.object({
       name: z.string(),
       price: z.number(),
@@ -62,7 +62,7 @@ export class ProductsController {
     }
 
     const { name, price } = parsedBody.data
-    const postedProduct = this.productsModel.insert(name, price)
+    const postedProduct = await this.productsModel.insert(name, price)
 
     res.status(201).json({
       products: [postedProduct],

@@ -5,7 +5,9 @@
   "workspaces": ["src/*"],
   "scripts": {
     "check": "biome check --fix",
-    "server:dev": "cd src/server;bun run dev"
+    "server:dev": "cd src/server;bun run dev",
+    "db:dev-wsl": "wsl -- bash -ic 'turso dev --db-file src/server/db/data/local.db'",
+    "db:dev": "turso dev --db-file src/server/db/data/local.db"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",

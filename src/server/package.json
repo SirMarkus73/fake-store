@@ -4,16 +4,22 @@
   "type": "module",
   "devDependencies": {
     "@types/bun": "latest",
-    "@types/express": "^5.0.1"
+    "@types/express": "^5.0.1",
+    "drizzle-kit": "^0.31.0"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
   },
   "dependencies": {
     "express": "^5.1.0",
-    "zod": "^3.24.3"
+    "zod": "^3.24.3",
+    "@libsql/client": "^0.15.4",
+    "drizzle-orm": "^0.43.1"
   },
   "scripts": {
-    "dev": "bun run --watch index.ts"
+    "dev": "bun run --watch index.ts",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio"
   }
 }
