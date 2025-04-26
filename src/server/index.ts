@@ -1,10 +1,10 @@
 import express from "express"
 
 import { json } from "express"
+import { PORT } from "@/lib/envConfig"
 import { productsRouter } from "@routes/products"
 
 const app = express()
-const PORT = 3000
 
 app.use(json())
 
