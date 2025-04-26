@@ -1,4 +1,4 @@
-import { TURSO_DATABASE_URL, TURSO_AUTH_TOKEN } from "./lib/envConfig"
+import { TURSO_AUTH_TOKEN, TURSO_DATABASE_URL } from "./lib/envConfig"
 
 import type { Config } from "drizzle-kit"
 

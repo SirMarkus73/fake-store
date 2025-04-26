@@ -1,6 +1,6 @@
-import { z } from "zod"
 import { ProductsModel } from "@models/products.model"
 import type { Request, Response } from "express"
+import { z } from "zod"
 
 export class ProductsController {
   productsModel = new ProductsModel()

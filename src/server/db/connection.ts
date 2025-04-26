@@ -1,7 +1,7 @@
 import { TURSO_AUTH_TOKEN, TURSO_DATABASE_URL } from "@/lib/envConfig"
 
-import { drizzle } from "drizzle-orm/libsql"
 import { createClient } from "@libsql/client"
+import { drizzle } from "drizzle-orm/libsql"
 
 const turso = createClient({
   url: TURSO_DATABASE_URL,

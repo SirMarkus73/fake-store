@@ -1,10 +1,10 @@
 import { sql } from "drizzle-orm"
 import {
-  text,
-  sqliteTable,
+  check,
   integer,
   numeric,
-  check,
+  sqliteTable,
+  text,
 } from "drizzle-orm/sqlite-core"
 
 export const product = sqliteTable(
