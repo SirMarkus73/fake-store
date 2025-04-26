@@ -1,4 +1,5 @@
 import { Router } from "express"
+import { z } from "zod"
 
 import { ProductsController } from "@controllers/products.controller"
 
@@ -14,11 +15,10 @@ productsRouter.get("/", (_, res) => {
 })
 
 productsRouter.get("/:id", (req, res) => {
-  const id = Number(req.params.id)
+  const id = req.params.id
+  const parsedId = z.number().safeParse(id)
 
-  console.log(id)
-
-  if (Number.isNaN(id)) {
+  if (!parsedId.success) {
     res.status(500).json({
       message: "Id is not a valid number.",
       products: [],
@@ -28,7 +28,7 @@ productsRouter.get("/:id", (req, res) => {
   }
 
   try {
-    const product = productsController.getById(id)
+    const product = productsController.getById(parsedId.data)
 
     res.json({
       products: [product],
@@ -36,7 +36,7 @@ productsRouter.get("/:id", (req, res) => {
     })
   } catch {
     res.status(404).json({
-      message: "Product not found",
+      message: "Product not found.",
       products: [],
       responseCode: 404,
     })
@@ -47,17 +47,31 @@ productsRouter.post("/", (req, res) => {
   const name = req.body.name
   const price = req.body.price
 
-  if (name === undefined || price === undefined) {
+  const parsedName = z.string().safeParse(name)
+  const parsedPrice = z.number().safeParse(price)
+
+  if (!parsedName.success) {
     res.status(500).json({
-      message: "Invalid body",
+      message: "Name is not valid or missing.",
       products: [],
       responseCode: 500,
     })
-
     return
   }
 
-  const postedProduct = productsController.post(name, price)
+  if (!parsedPrice.success) {
+    res.status(500).json({
+      message: "Price is not valid or missing.",
+      products: [],
+      responseCode: 500,
+    })
+    return
+  }
+
+  const postedProduct = productsController.post(
+    parsedName.data,
+    parsedPrice.data,
+  )
 
   res.status(201).json({
     products: [postedProduct],
