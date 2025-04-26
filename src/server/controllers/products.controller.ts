@@ -1,4 +1,4 @@
-import { ProductsModel } from "../models/products.model"
+import { ProductsModel } from "@models/products.model"
 
 export class ProductsController {
   productsModel = new ProductsModel()
