@@ -5,21 +5,14 @@
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.preact:hover {
-  filter: drop-shadow(0 0 2em #673ab8aa);
+section {
+  display: flex;
+  gap: 1rem;
 }
 
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
+article {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid grey;
+  padding: 1rem;
 }
