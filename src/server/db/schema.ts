@@ -3,9 +3,9 @@ import {
   check,
   integer,
   numeric,
+  primaryKey,
   sqliteTable,
   text,
-  primaryKey,
 } from "drizzle-orm/sqlite-core"
 
 export const product = sqliteTable(
