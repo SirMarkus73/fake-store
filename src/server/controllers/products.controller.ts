@@ -48,6 +48,7 @@ export class ProductsController {
     const bodySchema = z.object({
       name: z.string(),
       price: z.number(),
+      categories: z.array(z.number()).optional(),
     })
 
     const parsedBody = bodySchema.safeParse(req.body)
@@ -61,8 +62,12 @@ export class ProductsController {
       return
     }
 
-    const { name, price } = parsedBody.data
-    const postedProduct = await this.productsModel.insert(name, price)
+    const { name, price, categories } = parsedBody.data
+    const postedProduct = await this.productsModel.insert(
+      name,
+      price,
+      categories,
+    )
 
     res.status(201).json({
       products: [postedProduct],
