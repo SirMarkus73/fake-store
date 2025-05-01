@@ -27,8 +27,12 @@ export const category = sqliteTable("category", {
 export const productCategory = sqliteTable(
   "product_category",
   {
-    productId: integer().references(() => product.id),
-    categoryId: integer().references(() => category.id),
+    productId: integer()
+      .references(() => product.id)
+      .notNull(),
+    categoryId: integer()
+      .references(() => category.id)
+      .notNull(),
   },
   (table) => [
     primaryKey({
