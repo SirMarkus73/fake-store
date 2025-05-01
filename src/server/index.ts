@@ -6,6 +6,7 @@ import { json } from "express"
 
 import path from "node:path"
 import { fileURLToPath } from "node:url"
+import { categoriesRouter } from "./routes/categories"
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -27,6 +28,7 @@ app.get("/api", (req, res) => {
 })
 
 app.use("/api/products", productsRouter)
+app.use("/api/categories", categoriesRouter)
 
 // Start the server
 app.listen(PORT, () => {
