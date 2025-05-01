@@ -63,15 +63,26 @@ export class ProductsController {
     }
 
     const { name, price, categories } = parsedBody.data
-    const postedProduct = await this.productsModel.insert(
-      name,
-      price,
-      categories,
-    )
 
-    res.status(201).json({
-      products: [postedProduct],
-      responseCode: 201,
-    })
+    try {
+      const postedProduct = await this.productsModel.insert(
+        name,
+        price,
+        categories,
+      )
+
+      res.status(201).json({
+        products: [postedProduct],
+        responseCode: 201,
+      })
+      return
+    } catch {
+      res.status(500).json({
+        message:
+          "Cannot insert the product categories relation (the product is created, but without categories).",
+        products: [],
+        responseCode: 500,
+      })
+    }
   }
 }

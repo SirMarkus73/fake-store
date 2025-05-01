@@ -71,7 +71,13 @@ export class ProductsModel {
         productId: productInserted[0].id,
       }))
 
-      await db.insert(productCategory).values(values)
+      try {
+        await db.insert(productCategory).values(values)
+      } catch {
+        throw new Error(
+          `Cannot insert product category relation with ${categoriesId} `,
+        )
+      }
 
       productWithCategories.categories = categoriesId
     }
