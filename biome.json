@@ -7,7 +7,7 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "ignore": ["src/client/tsconfig.*", "src/client/dist/**/*.*"]
+    "ignore": ["packages/client/tsconfig.*", "packages/client/dist/**/*.*"]
   },
   "formatter": {
     "enabled": true,
