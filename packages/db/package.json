@@ -1,0 +1,16 @@
+{
+  "name": "db",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "turso dev --db-file ./data/local.db"
+  },
+  "dependencies": {
+    "preact": "^10.26.4"
+  },
+  "devDependencies": {
+    "@preact/preset-vite": "^2.10.1",
+    "typescript": "~5.7.2",
+    "vite": "^6.3.1"
+  }
+}
