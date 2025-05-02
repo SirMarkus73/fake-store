@@ -176,3 +176,5 @@ dist
 
 packages/db/data/
 packages/server/migrations/
+
+bun.lockb
