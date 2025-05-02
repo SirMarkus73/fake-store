@@ -9,7 +9,11 @@
     "dev": "bun --filter './packages/*' dev",
     "server:dev": "bun --filter './packages/server' dev",
     "client:dev": "bun --filter './packages/client' dev",
-    "db:dev": "bun --filter './packages/db' dev"
+    "db:dev": "bun --filter './packages/db' dev",
+
+    "db:generate": "bun --filter './packages/server' db:generate",
+    "db:migrate": "bun --filter './packages/server' db:migrate",
+    "db:studio": "bun --filter './packages/server' db:studio"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
