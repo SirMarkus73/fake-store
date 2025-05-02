@@ -1,12 +1,12 @@
-import express from "express"
-
-import { PORT } from "@/lib/envConfig"
-import { productsRouter } from "@routes/products"
-import { json } from "express"
-
 import path from "node:path"
 import { fileURLToPath } from "node:url"
-import { categoriesRouter } from "./routes/categories"
+
+import { PORT } from "@/lib/envConfig"
+import { categoriesRouter } from "@routes/categories"
+import { productsRouter } from "@routes/products"
+
+import express from "express"
+import { json } from "express"
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
