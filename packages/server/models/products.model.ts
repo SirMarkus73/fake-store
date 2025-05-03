@@ -1,5 +1,5 @@
 import { db } from "@/db/connection"
-import { product, productCategory, category } from "@/db/schema"
+import { category, product, productCategory } from "@/db/schema"
 import type {
   ProductWithCategory,
   ProductWithCategoryList,
