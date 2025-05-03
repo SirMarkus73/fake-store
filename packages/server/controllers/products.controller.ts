@@ -72,7 +72,7 @@ export class ProductsController {
       })
 
       res.status(201).json({
-        products: [postedProduct],
+        products: postedProduct,
         responseCode: 201,
       })
       return
