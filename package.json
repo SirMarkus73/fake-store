@@ -6,14 +6,12 @@
   "scripts": {
     "check": "biome check --fix",
 
-    "dev": "bun --filter './packages/*' dev",
-    "server:dev": "bun --filter './packages/server' dev",
-    "client:dev": "bun --filter './packages/client' dev",
-    "db:dev": "bun --filter './packages/db' dev",
+    "dev-windows": "bun --filter '*' dev-windows",
+    "dev-linux": "bun --filter '*' dev-linux",
 
-    "db:generate": "bun --filter './packages/server' db:generate",
-    "db:migrate": "bun --filter './packages/server' db:migrate",
-    "db:studio": "bun --filter './packages/server' db:studio"
+    "db:generate": "bun --filter 'server' db:generate",
+    "db:migrate": "bun --filter 'server' db:migrate",
+    "db:studio": "bun --filter '.server' db:studio"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",

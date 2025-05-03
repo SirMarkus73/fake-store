@@ -4,7 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev-windows": "vite",
+    "dev-linux": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview"
   },

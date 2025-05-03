@@ -3,7 +3,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "turso dev --db-file ./data/local.db"
+    "dev-windows": "wsl -- bash -ic 'turso dev --db-file ./data/local.db'",
+    "dev-linux": "turso dev --db-file ./data/local.db"
   },
   "dependencies": {
     "preact": "^10.26.4"

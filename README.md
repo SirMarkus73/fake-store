@@ -4,33 +4,33 @@
 
 1. Copy the `.env.example` in `/packages/server` and rename it to `.env` 
 
-2. Run the following commands to start the project 
+2. Install the dependencies
+```bash
+bun run install
+```
 
-   - On Linux
+3. Run the following commands to start the project 
 
-    ```bash
-    bun install
-    bun run dev
-    ```
+- On Linux
+
+```bash
+bun run dev-linux
+```
    
-   - On windows
+- On windows
   
-    ```bash
-    wsl
-    bun install
-    bun run dev
-    ```
-3. If is the first time running the project
+```bash
+bun run dev-windows
+```
+
+4. If is the first time running the project
 
 ```bash
 bun run db:generate
 bun run db:migrate
 ```
 
-4. Run drizzle studio to view the data on the db
-
-> [!warning]
-> If you are using windows make sure to run the command outside wsl
+5. Run drizzle studio to view the data on the db
 
 ```bash
 bun run db:studio
