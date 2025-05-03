@@ -29,7 +29,7 @@ export class ProductsController {
     }
 
     try {
-      const product = await this.productsModel.getById(parsedId.data)
+      const product = await this.productsModel.getById({ id: parsedId.data })
 
       res.status(200).json({
         products: [product],
@@ -65,11 +65,11 @@ export class ProductsController {
     const { name, price, categories } = parsedBody.data
 
     try {
-      const postedProduct = await this.productsModel.insert(
+      const postedProduct = await this.productsModel.insert({
         name,
         price,
         categories,
-      )
+      })
 
       res.status(201).json({
         products: [postedProduct],

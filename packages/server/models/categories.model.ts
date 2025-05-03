@@ -2,13 +2,22 @@ import { db } from "@/db/connection"
 import { category } from "@/db/schema"
 import { eq } from "drizzle-orm"
 
+interface GetByIdParams {
+  id: number
+}
+
+interface CreateParams {
+  name: string
+  description: string
+}
+
 export class CategoriesModel {
   getAll = async () => {
     const categories = await db.select().from(category)
     return categories
   }
 
-  getById = async (id: number) => {
+  getById = async ({ id }: GetByIdParams) => {
     const categories = await db
       .select()
       .from(category)
@@ -21,7 +30,7 @@ export class CategoriesModel {
     return categories[0]
   }
 
-  create = async (name: string, description: string) => {
+  create = async ({ name, description }: CreateParams) => {
     const categoryCreated = await db
       .insert(category)
       .values({ name, description })
