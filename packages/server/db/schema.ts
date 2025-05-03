@@ -20,7 +20,7 @@ export const product = sqliteTable(
 
 export const category = sqliteTable("category", {
   id: integer().primaryKey({ autoIncrement: true }),
-  name: text().notNull(),
+  name: text().notNull().unique(),
   description: text().notNull(),
 })
 
@@ -28,10 +28,10 @@ export const productCategory = sqliteTable(
   "product_category",
   {
     productId: integer()
-      .references(() => product.id)
+      .references(() => product.id, { onDelete: "cascade" })
       .notNull(),
     categoryId: integer()
-      .references(() => category.id)
+      .references(() => category.id, { onDelete: "cascade" })
       .notNull(),
   },
   (table) => [
