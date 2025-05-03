@@ -1,6 +1,9 @@
 import { db } from "@/db/connection"
-import { product, productCategory } from "@/db/schema"
-import type { ProductWithCategories } from "@/types/products"
+import { product, productCategory, category } from "@/db/schema"
+import type {
+  ProductWithCategory,
+  ProductWithCategoryList,
+} from "@/types/products"
 import { eq } from "drizzle-orm"
 
 interface GetByIdParams {
@@ -12,85 +15,97 @@ interface InsertParams {
   price: number
   categories?: number[]
 }
+
 export class ProductsModel {
-  #getProductCategories = async (productId: number) => {
-    const categoriesIdSelect = await db
-      .select()
-      .from(productCategory)
-      .where(eq(productCategory.productId, productId))
+  #parseProducts = async (
+    products: ProductWithCategory[],
+  ): Promise<ProductWithCategoryList[]> => {
+    const parsedProducts = products.reduce((accumulator, current) => {
+      const existingProduct = accumulator.find((prod) => prod.id === current.id)
 
-    return categoriesIdSelect.map((val) => val.categoryId)
-  }
-
-  getAll = async () => {
-    const products = await db.select().from(product)
-
-    const productsWithCategoriesPromise = products.map(async (product) => {
-      const categoriesId = await this.#getProductCategories(product.id)
-
-      const productWithCategory: ProductWithCategories = {
-        ...product,
-        categories: categoriesId,
+      if (existingProduct && current.category) {
+        existingProduct.categories.push(current.category)
+      } else {
+        accumulator.push({
+          id: current.id,
+          name: current.name,
+          price: current.price,
+          categories: current.category ? [current.category] : [],
+        })
       }
 
-      return productWithCategory
-    })
+      return accumulator
+    }, [] as ProductWithCategoryList[])
 
-    const productsWithCategories = await Promise.all(
-      productsWithCategoriesPromise,
-    )
-
-    return productsWithCategories
+    return parsedProducts
   }
 
-  getById = async ({ id }: GetByIdParams) => {
+  getAll = async (): Promise<ProductWithCategoryList[]> => {
+    const products = await db
+      .select({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        category: category.name,
+      })
+      .from(product)
+      .leftJoin(productCategory, eq(product.id, productCategory.productId))
+      .leftJoin(category, eq(productCategory.categoryId, category.id))
+      .orderBy(product.id)
+
+    return this.#parseProducts(products)
+  }
+
+  getById = async ({
+    id,
+  }: GetByIdParams): Promise<ProductWithCategoryList[]> => {
     const selectedProduct = await db
-      .select()
+      .select({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        category: category.name,
+      })
       .from(product)
       .where(eq(product.id, id))
+      .leftJoin(productCategory, eq(product.id, productCategory.productId))
+      .leftJoin(category, eq(productCategory.categoryId, category.id))
+      .orderBy(product.id)
 
     if (selectedProduct.length === 0) {
       throw new Error("Product not found")
     }
 
-    const categoriesId = await this.#getProductCategories(id)
-
-    const selectedProductWithCategories: ProductWithCategories = {
-      ...selectedProduct[0],
-      categories: categoriesId,
-    }
-
-    return selectedProductWithCategories
+    return this.#parseProducts(selectedProduct)
   }
 
-  insert = async ({ name, price, categories }: InsertParams) => {
+  insert = async ({
+    name,
+    price,
+    categories,
+  }: InsertParams): Promise<ProductWithCategoryList[]> => {
     const productInserted = await db
       .insert(product)
       .values({ name, price })
       .returning()
 
-    const productWithCategories: ProductWithCategories = {
-      ...productInserted[0],
-      categories: [],
-    }
+    const productInsertedId = productInserted[0].id
 
-    if (categories !== undefined) {
-      const values = categories.map((category) => ({
+    if (categories !== undefined && categories.length > 0) {
+      const insertCategories = categories?.map((category) => ({
         categoryId: category,
-        productId: productInserted[0].id,
+        productId: productInsertedId,
       }))
 
       try {
-        await db.insert(productCategory).values(values)
+        await db.insert(productCategory).values(insertCategories)
       } catch {
         throw new Error(
           `Cannot insert product category relation with ${categories} `,
         )
       }
-
-      productWithCategories.categories = categories
     }
 
-    return [productWithCategories]
+    return this.getById({ id: productInsertedId })
   }
 }
