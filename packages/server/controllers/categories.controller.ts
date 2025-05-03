@@ -30,7 +30,9 @@ export class CategoriesController {
     }
 
     try {
-      const categories = await this.categoriesModel.getById(parsedId.data)
+      const categories = await this.categoriesModel.getById({
+        id: parsedId.data,
+      })
       res.status(200).json({
         categories: [categories],
         responseCode: 200,
@@ -64,7 +66,10 @@ export class CategoriesController {
 
     const { name, description } = parsedBody.data
 
-    const postedCategory = await this.categoriesModel.create(name, description)
+    const postedCategory = await this.categoriesModel.create({
+      name,
+      description,
+    })
 
     res.status(201).json({
       categories: postedCategory,

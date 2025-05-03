@@ -3,6 +3,15 @@ import { product, productCategory } from "@/db/schema"
 import type { ProductWithCategories } from "@/types/products"
 import { eq } from "drizzle-orm"
 
+interface GetByIdParams {
+  id: number
+}
+
+interface InsertParams {
+  name: string
+  price: number
+  categories?: number[]
+}
 export class ProductsModel {
   #getProductCategories = async (productId: number) => {
     const categoriesIdSelect = await db
@@ -34,7 +43,7 @@ export class ProductsModel {
     return productsWithCategories
   }
 
-  getById = async (id: number) => {
+  getById = async ({ id }: GetByIdParams) => {
     const selectedProduct = await db
       .select()
       .from(product)
@@ -54,7 +63,7 @@ export class ProductsModel {
     return selectedProductWithCategories
   }
 
-  insert = async (name: string, price: number, categoriesId?: number[]) => {
+  insert = async ({ name, price, categories }: InsertParams) => {
     const productInserted = await db
       .insert(product)
       .values({ name, price })
@@ -65,9 +74,9 @@ export class ProductsModel {
       categories: [],
     }
 
-    if (categoriesId !== undefined) {
-      const values = categoriesId.map((categoryId) => ({
-        categoryId,
+    if (categories !== undefined) {
+      const values = categories.map((category) => ({
+        categoryId: category,
         productId: productInserted[0].id,
       }))
 
@@ -75,11 +84,11 @@ export class ProductsModel {
         await db.insert(productCategory).values(values)
       } catch {
         throw new Error(
-          `Cannot insert product category relation with ${categoriesId} `,
+          `Cannot insert product category relation with ${categories} `,
         )
       }
 
-      productWithCategories.categories = categoriesId
+      productWithCategories.categories = categories
     }
 
     return [productWithCategories]
