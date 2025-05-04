@@ -23,7 +23,7 @@ app.get(/^\/(?!api).*/, (_, res) => {
 })
 
 // Basic route
-app.get("/api", (req, res) => {
+app.get("/api", (_req, res) => {
   res.send("Welcome to the Fake Store API!")
 })
 
