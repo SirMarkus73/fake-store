@@ -1,10 +1,13 @@
 import { db } from "@/db/connection"
 import { category, product, productCategory } from "@/db/schema"
+import { DatabaseError, ForeignKeyError } from "@/errors/databaseError"
+import { NotFoundError } from "@/errors/notFoundError"
 import type {
+  BaseProduct,
   ProductWithCategory,
   ProductWithCategoryList,
 } from "@/types/products"
-import { eq } from "drizzle-orm"
+import { DrizzleError, eq } from "drizzle-orm"
 
 interface GetByIdParams {
   id: number
@@ -41,39 +44,48 @@ export class ProductsModel {
   }
 
   getAll = async (): Promise<ProductWithCategoryList[]> => {
-    const products = await db
-      .select({
-        id: product.id,
-        name: product.name,
-        price: product.price,
-        category: category.name,
-      })
-      .from(product)
-      .leftJoin(productCategory, eq(product.id, productCategory.productId))
-      .leftJoin(category, eq(productCategory.categoryId, category.id))
-      .orderBy(product.id)
+    try {
+      const products = await db
+        .select({
+          id: product.id,
+          name: product.name,
+          price: product.price,
+          category: category.name,
+        })
+        .from(product)
+        .leftJoin(productCategory, eq(product.id, productCategory.productId))
+        .leftJoin(category, eq(productCategory.categoryId, category.id))
+        .orderBy(product.id)
 
-    return this.#parseProducts(products)
+      return this.#parseProducts(products)
+    } catch {
+      throw new DatabaseError("Cannot get all products from database")
+    }
   }
 
   getById = async ({
     id,
   }: GetByIdParams): Promise<ProductWithCategoryList[]> => {
-    const selectedProduct = await db
-      .select({
-        id: product.id,
-        name: product.name,
-        price: product.price,
-        category: category.name,
-      })
-      .from(product)
-      .where(eq(product.id, id))
-      .leftJoin(productCategory, eq(product.id, productCategory.productId))
-      .leftJoin(category, eq(productCategory.categoryId, category.id))
-      .orderBy(product.id)
+    let selectedProduct: ProductWithCategory[]
 
+    try {
+      selectedProduct = await db
+        .select({
+          id: product.id,
+          name: product.name,
+          price: product.price,
+          category: category.name,
+        })
+        .from(product)
+        .where(eq(product.id, id))
+        .leftJoin(productCategory, eq(product.id, productCategory.productId))
+        .leftJoin(category, eq(productCategory.categoryId, category.id))
+        .orderBy(product.id)
+    } catch {
+      throw new DatabaseError(`Cannot get the product with id ${id}`)
+    }
     if (selectedProduct.length === 0) {
-      throw new Error("Product not found")
+      throw new NotFoundError(`Product with id ${id} not found in database`)
     }
 
     return this.#parseProducts(selectedProduct)
@@ -84,28 +96,49 @@ export class ProductsModel {
     price,
     categories,
   }: InsertParams): Promise<ProductWithCategoryList[]> => {
-    const productInserted = await db
-      .insert(product)
-      .values({ name, price })
-      .returning()
+    let insertedProduct: BaseProduct[]
+    try {
+      insertedProduct = await db.transaction(async (tx) => {
+        let productInserted: BaseProduct[]
 
-    const productInsertedId = productInserted[0].id
+        try {
+          productInserted = await tx
+            .insert(product)
+            .values({ name, price })
+            .returning()
+        } catch {
+          throw new DatabaseError(
+            `Cannot insert product with name: ${name}, price ${price}`,
+          )
+        }
 
-    if (categories !== undefined && categories.length > 0) {
-      const insertCategories = categories?.map((category) => ({
-        categoryId: category,
-        productId: productInsertedId,
-      }))
+        const productInsertedId = productInserted[0].id
 
-      try {
-        await db.insert(productCategory).values(insertCategories)
-      } catch {
-        throw new Error(
-          `Cannot insert product category relation with ${categories} `,
+        if (categories !== undefined && categories.length > 0) {
+          const insertCategories = categories?.map((category) => ({
+            categoryId: category,
+            productId: productInsertedId,
+          }))
+
+          try {
+            await tx.insert(productCategory).values(insertCategories)
+          } catch {
+            tx.rollback()
+          }
+        }
+
+        return productInserted
+      })
+    } catch (error) {
+      if (error instanceof DrizzleError && error.message === "Rollback") {
+        throw new ForeignKeyError(
+          "Failed to insert product categories due to foreign key constraint violation",
         )
       }
+
+      throw error
     }
 
-    return this.getById({ id: productInsertedId })
+    return this.getById({ id: insertedProduct[0].id })
   }
 }
