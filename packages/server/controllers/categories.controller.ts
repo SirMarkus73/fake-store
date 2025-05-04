@@ -113,7 +113,7 @@ export class CategoriesController {
 
     const { name, description } = parsedBody.data
 
-    const result = await this.categoriesModel.create({
+    const result = await this.categoriesModel.post({
       name,
       description,
     })
