@@ -1,9 +1,9 @@
 import type { Request, Response } from "express"
 import { z } from "zod"
 
-import { CategoriesModel } from "@/models/categories.model"
 import { DatabaseError } from "@/errors/databaseError"
 import { NotFoundError } from "@/errors/notFoundError"
+import { CategoriesModel } from "@/models/categories.model"
 
 const errorHandler = ({
   res,
