@@ -9,3 +9,5 @@ categoriesRouter.get("/", categoriesController.getAll)
 categoriesRouter.get("/:id", categoriesController.getById)
 
 categoriesRouter.post("/", categoriesController.post)
+
+categoriesRouter.delete("/:id", categoriesController.delete)

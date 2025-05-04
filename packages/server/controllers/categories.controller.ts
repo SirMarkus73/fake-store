@@ -9,7 +9,11 @@ const errorHandler = ({
   res,
   error,
   context,
-}: { res: Response; error: unknown; context: "Insert" | "Select" }) => {
+}: {
+  res: Response
+  error: unknown
+  context: "Insert" | "Select" | "Delete"
+}) => {
   console.error(error)
 
   if (error instanceof DatabaseError && context === "Select") {
@@ -30,10 +34,31 @@ const errorHandler = ({
     })
   }
 
-  if (error instanceof NotFoundError) {
+  if (error instanceof DatabaseError && context === "Delete") {
+    return res.status(500).json({
+      message:
+        "Unable to remove the category. Please verify the details and try again, or contact support if the issue persists.",
+      categories: [],
+      responseCode: 500,
+    })
+  }
+
+  if (
+    error instanceof NotFoundError &&
+    (context === "Insert" || context === "Select")
+  ) {
     return res.status(404).json({
       message:
         "The requested category was not found. Please verify the category ID and try again.",
+      categories: [],
+      responseCode: 404,
+    })
+  }
+
+  if (error instanceof NotFoundError && context === "Delete") {
+    return res.status(404).json({
+      message:
+        "The category you are trying to delete does not exist. Please verify the category ID and ensure it is correct before trying again.",
       categories: [],
       responseCode: 404,
     })
@@ -128,6 +153,33 @@ export class CategoriesController {
     return res.status(201).json({
       categories: postedCategory,
       responseCode: 201,
+    })
+  }
+
+  delete = async (req: Request, res: Response): Promise<Response> => {
+    const parsedId = z.coerce.number().safeParse(req.params.id)
+
+    if (!parsedId.success) {
+      return res.status(500).json({
+        message: "Id is not a valid number or missing.",
+        categories: [],
+        responseCode: 500,
+      })
+    }
+
+    const id = parsedId.data
+
+    const result = await this.categoriesModel.delete({ id })
+
+    if (result.isErr()) {
+      const { error } = result
+      return errorHandler({ res, error, context: "Delete" })
+    }
+
+    const { value: deletedCategory } = result
+    return res.status(200).json({
+      categories: deletedCategory,
+      responseCode: 200,
     })
   }
 }

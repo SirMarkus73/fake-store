@@ -20,6 +20,10 @@ interface InsertParams {
   categories?: number[]
 }
 
+interface DeleteParams {
+  id: number
+}
+
 export class ProductsModel {
   #parseProducts = async (
     products: ProductWithCategory[],
@@ -161,5 +165,27 @@ export class ProductsModel {
 
     const { value: insertedProduct } = result
     return this.getById({ id: insertedProduct[0].id })
+  }
+
+  delete = async ({
+    id,
+  }: DeleteParams): Promise<
+    Result<ProductWithCategoryList[], DatabaseError>
+  > => {
+    const productToDelete = await this.getById({ id })
+
+    if (productToDelete.isErr()) productToDelete
+
+    const productDelete = await ResultAsync.fromPromise(
+      db.delete(product).where(eq(product.id, id)),
+      () => new DatabaseError(`couldn't delete the product with id: ${id}`),
+    )
+
+    if (productDelete.isErr()) {
+      const { error } = productDelete
+      return err(error)
+    }
+
+    return productToDelete
   }
 }

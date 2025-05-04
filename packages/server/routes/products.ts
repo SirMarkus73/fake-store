@@ -10,3 +10,5 @@ productsRouter.get("/", productsController.getAll)
 productsRouter.get("/:id", productsController.getById)
 
 productsRouter.post("/", productsController.post)
+
+productsRouter.delete("/:id", productsController.delete)
