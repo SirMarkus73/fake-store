@@ -3,8 +3,8 @@ import { z } from "zod"
 
 import { DatabaseError } from "@/errors/databaseError"
 import { NotFoundError } from "@/errors/notFoundError"
-import { CategoriesModel } from "@/models/categories.model"
 import { tryCatch } from "@/lib/tryCatch"
+import { CategoriesModel } from "@/models/categories.model"
 
 const errorHandler = ({
   res,
