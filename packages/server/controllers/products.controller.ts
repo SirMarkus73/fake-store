@@ -1,6 +1,5 @@
 import { DatabaseError, ForeignKeyError } from "@/errors/databaseError"
 import { NotFoundError } from "@/errors/notFoundError"
-import { tryCatch } from "@/lib/tryCatch"
 import { ProductsModel } from "@models/products.model"
 import type { Request, Response } from "express"
 import { z } from "zod"
@@ -10,8 +9,6 @@ const errorHandler = ({
   error,
   context,
 }: { res: Response; error: unknown; context: "Insert" | "Select" }) => {
-  console.error(error)
-
   if (error instanceof DatabaseError && context === "Select") {
     return res.status(500).json({
       message:
@@ -62,13 +59,14 @@ export class ProductsController {
   productsModel = new ProductsModel()
 
   getAll = async (_: Request, res: Response): Promise<Response> => {
-    const { data: products, error } = await tryCatch(
-      this.productsModel.getAll(),
-    )
+    const result = await this.productsModel.getAll()
 
-    if (error) {
+    if (result.isErr()) {
+      const { error } = result
       return errorHandler({ res, error, context: "Select" })
     }
+
+    const { value: products } = result
 
     return res.status(200).json({
       products,
@@ -89,16 +87,19 @@ export class ProductsController {
       })
     }
 
-    const { data: product, error } = await tryCatch(
-      this.productsModel.getById({ id: parsedId.data }),
-    )
+    const result = await this.productsModel.getById({
+      id: parsedId.data,
+    })
 
-    if (error) {
+    if (result.isErr()) {
+      const { error } = result
       return errorHandler({ res, error, context: "Insert" })
     }
 
+    const { value: products } = result
+
     return res.status(200).json({
-      products: [product],
+      products,
       response: 200,
     })
   }
@@ -123,17 +124,14 @@ export class ProductsController {
 
     const { name, price, categories } = parsedBody.data
 
-    const { data: postedProduct, error } = await tryCatch(
-      this.productsModel.insert({
-        name,
-        price,
-        categories,
-      }),
-    )
+    const result = await this.productsModel.insert({ name, price, categories })
 
-    if (error) {
+    if (result.isErr()) {
+      const { error } = result
       return errorHandler({ res, error, context: "Insert" })
     }
+
+    const { value: postedProduct } = result
 
     return res.status(201).json({
       products: postedProduct,

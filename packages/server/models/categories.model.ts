@@ -2,8 +2,9 @@ import { db } from "@/db/connection"
 import { category } from "@/db/schema"
 import { DatabaseError } from "@/errors/databaseError"
 import { NotFoundError } from "@/errors/notFoundError"
-import { tryCatch } from "@/lib/tryCatch"
+import type { Category } from "@/types/category"
 import { eq } from "drizzle-orm"
+import { type Result, ResultAsync, err, ok } from "neverthrow"
 
 interface GetByIdParams {
   id: number
@@ -14,43 +15,60 @@ interface CreateParams {
   description: string
 }
 
+type ReturnType = Promise<Result<Category[], DatabaseError>>
+
 export class CategoriesModel {
-  getAll = async () => {
-    const { data, error } = await tryCatch(db.select().from(category))
-    if (error) {
-      throw new DatabaseError("Cannot get all categories from database")
-    }
-
-    return data
-  }
-
-  getById = async ({ id }: GetByIdParams) => {
-    const { data: categories, error } = await tryCatch(
-      db.select().from(category).where(eq(category.id, id)),
+  getAll = async (): ReturnType => {
+    const result = await ResultAsync.fromPromise(
+      db.select().from(category),
+      () => new DatabaseError("Cannot get all categories from database"),
     )
 
-    if (error) {
-      throw new DatabaseError("Cannot the requested category from database.")
+    if (result.isErr()) {
+      const { error } = result
+      return err(error)
     }
+
+    const { value } = result
+    return ok(value)
+  }
+
+  getById = async ({ id }: GetByIdParams): ReturnType => {
+    const result = await ResultAsync.fromPromise(
+      db.select().from(category).where(eq(category.id, id)),
+      () =>
+        new DatabaseError("Cannot get the requested category from database."),
+    )
+
+    if (result.isErr()) {
+      const { error } = result
+      return err(error)
+    }
+
+    const { value: categories } = result
 
     if (categories.length === 0) {
-      throw new NotFoundError(`Category with id ${id} not found.`)
+      return err(new NotFoundError(`Category with id ${id} not found.`))
     }
 
-    return categories[0]
+    return ok(categories)
   }
 
-  create = async ({ name, description }: CreateParams) => {
-    const { data, error } = await tryCatch(
+  create = async ({ name, description }: CreateParams): ReturnType => {
+    const result = await ResultAsync.fromPromise(
       db.insert(category).values({ name, description }).returning(),
+      () =>
+        new DatabaseError(
+          `Unable to create a category with name: ${name}, description: ${description}`,
+        ),
     )
 
-    if (error) {
-      throw new DatabaseError(
-        `Unable to create a category with name: ${name}, description: ${description}`,
-      )
+    if (result.isErr()) {
+      const { error } = result
+      return err(error)
     }
 
-    return data
+    const { value } = result
+    return ok(value)
   }
 }

@@ -3,7 +3,6 @@ import { z } from "zod"
 
 import { DatabaseError } from "@/errors/databaseError"
 import { NotFoundError } from "@/errors/notFoundError"
-import { tryCatch } from "@/lib/tryCatch"
 import { CategoriesModel } from "@/models/categories.model"
 
 const errorHandler = ({
@@ -52,13 +51,14 @@ export class CategoriesController {
   categoriesModel = new CategoriesModel()
 
   getAll = async (_: Request, res: Response): Promise<Response> => {
-    const { data: categories, error } = await tryCatch(
-      this.categoriesModel.getAll(),
-    )
+    const result = await this.categoriesModel.getAll()
 
-    if (error) {
+    if (result.isErr()) {
+      const { error } = result
       return errorHandler({ res, error, context: "Select" })
     }
+
+    const { value: categories } = result
 
     return res.status(200).json({
       categories,
@@ -78,18 +78,19 @@ export class CategoriesController {
       })
     }
 
-    const { data: categories, error } = await tryCatch(
-      this.categoriesModel.getById({
-        id: parsedId.data,
-      }),
-    )
+    const result = await this.categoriesModel.getById({
+      id: parsedId.data,
+    })
 
-    if (error) {
+    if (result.isErr()) {
+      const { error } = result
       return errorHandler({ res, error, context: "Select" })
     }
 
+    const { value: categories } = result
+
     return res.status(200).json({
-      categories: [categories],
+      categories: categories,
       responseCode: 200,
     })
   }
@@ -112,16 +113,17 @@ export class CategoriesController {
 
     const { name, description } = parsedBody.data
 
-    const { data: postedCategory, error } = await tryCatch(
-      this.categoriesModel.create({
-        name,
-        description,
-      }),
-    )
+    const result = await this.categoriesModel.create({
+      name,
+      description,
+    })
 
-    if (error) {
+    if (result.isErr()) {
+      const { error } = result
       return errorHandler({ res, error, context: "Insert" })
     }
+
+    const { value: postedCategory } = result
 
     return res.status(201).json({
       categories: postedCategory,
