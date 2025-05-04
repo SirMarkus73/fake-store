@@ -8,7 +8,7 @@ const errorHandler = ({
   res,
   error,
   context,
-}: { res: Response; error: Error; context: "Insert" | "Select" }) => {
+}: { res: Response; error: unknown; context: "Insert" | "Select" }) => {
   console.error(error)
 
   if (error instanceof DatabaseError && context === "Select") {
@@ -69,10 +69,6 @@ export class ProductsController {
         responseCode: 200,
       })
     } catch (error) {
-      if (error instanceof Error) {
-        return errorHandler({ res, error, context: "Select" })
-      }
-
       return errorHandler({ res, error: new Error(), context: "Select" })
     }
   }
@@ -98,10 +94,6 @@ export class ProductsController {
         response: 200,
       })
     } catch (error) {
-      if (error instanceof Error) {
-        return errorHandler({ res, error, context: "Select" })
-      }
-
       return errorHandler({ res, error: new Error(), context: "Insert" })
     }
   }
@@ -138,10 +130,6 @@ export class ProductsController {
         responseCode: 201,
       })
     } catch (error) {
-      if (error instanceof Error) {
-        return errorHandler({ res, error, context: "Insert" })
-      }
-
       return errorHandler({ res, error: new Error(), context: "Insert" })
     }
   }
