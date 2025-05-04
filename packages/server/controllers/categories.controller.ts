@@ -4,6 +4,7 @@ import { z } from "zod"
 import { DatabaseError } from "@/errors/databaseError"
 import { NotFoundError } from "@/errors/notFoundError"
 import { CategoriesModel } from "@/models/categories.model"
+import { tryCatch } from "@/lib/tryCatch"
 
 const errorHandler = ({
   res,
@@ -51,20 +52,22 @@ export class CategoriesController {
   categoriesModel = new CategoriesModel()
 
   getAll = async (_: Request, res: Response): Promise<Response> => {
-    try {
-      const categories = await this.categoriesModel.getAll()
-      return res.status(200).json({
-        categories,
-        responseCode: 200,
-      })
-    } catch (error) {
+    const { data: categories, error } = await tryCatch(
+      this.categoriesModel.getAll(),
+    )
+
+    if (error) {
       return errorHandler({ res, error, context: "Select" })
     }
+
+    return res.status(200).json({
+      categories,
+      responseCode: 200,
+    })
   }
 
   getById = async (req: Request, res: Response): Promise<Response> => {
     const id = req.params.id
-
     const parsedId = z.coerce.number().safeParse(id)
 
     if (!parsedId.success) {
@@ -75,17 +78,20 @@ export class CategoriesController {
       })
     }
 
-    try {
-      const categories = await this.categoriesModel.getById({
+    const { data: categories, error } = await tryCatch(
+      this.categoriesModel.getById({
         id: parsedId.data,
-      })
-      return res.status(200).json({
-        categories: [categories],
-        responseCode: 200,
-      })
-    } catch (error) {
+      }),
+    )
+
+    if (error) {
       return errorHandler({ res, error, context: "Select" })
     }
+
+    return res.status(200).json({
+      categories: [categories],
+      responseCode: 200,
+    })
   }
 
   post = async (req: Request, res: Response): Promise<Response> => {
@@ -106,18 +112,20 @@ export class CategoriesController {
 
     const { name, description } = parsedBody.data
 
-    try {
-      const postedCategory = await this.categoriesModel.create({
+    const { data: postedCategory, error } = await tryCatch(
+      this.categoriesModel.create({
         name,
         description,
-      })
+      }),
+    )
 
-      return res.status(201).json({
-        categories: postedCategory,
-        responseCode: 201,
-      })
-    } catch (error) {
+    if (error) {
       return errorHandler({ res, error, context: "Insert" })
     }
+
+    return res.status(201).json({
+      categories: postedCategory,
+      responseCode: 201,
+    })
   }
 }

@@ -2,7 +2,7 @@ import { db } from "@/db/connection"
 import { category } from "@/db/schema"
 import { DatabaseError } from "@/errors/databaseError"
 import { NotFoundError } from "@/errors/notFoundError"
-import type { Category } from "@/types/category"
+import { tryCatch } from "@/lib/tryCatch"
 import { eq } from "drizzle-orm"
 
 interface GetByIdParams {
@@ -16,19 +16,20 @@ interface CreateParams {
 
 export class CategoriesModel {
   getAll = async () => {
-    try {
-      return await db.select().from(category)
-    } catch {
+    const { data, error } = await tryCatch(db.select().from(category))
+    if (error) {
       throw new DatabaseError("Cannot get all categories from database")
     }
+
+    return data
   }
 
   getById = async ({ id }: GetByIdParams) => {
-    let categories: Category[]
+    const { data: categories, error } = await tryCatch(
+      db.select().from(category).where(eq(category.id, id)),
+    )
 
-    try {
-      categories = await db.select().from(category).where(eq(category.id, id))
-    } catch {
+    if (error) {
       throw new DatabaseError("Cannot the requested category from database.")
     }
 
@@ -40,12 +41,16 @@ export class CategoriesModel {
   }
 
   create = async ({ name, description }: CreateParams) => {
-    try {
-      return await db.insert(category).values({ name, description }).returning()
-    } catch {
+    const { data, error } = await tryCatch(
+      db.insert(category).values({ name, description }).returning(),
+    )
+
+    if (error) {
       throw new DatabaseError(
         `Unable to create a category with name: ${name}, description: ${description}`,
       )
     }
+
+    return data
   }
 }
