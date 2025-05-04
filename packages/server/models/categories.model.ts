@@ -54,7 +54,7 @@ export class CategoriesModel {
     return ok(categories)
   }
 
-  create = async ({ name, description }: CreateParams): ReturnType => {
+  post = async ({ name, description }: CreateParams): ReturnType => {
     const result = await ResultAsync.fromPromise(
       db.insert(category).values({ name, description }).returning(),
       () =>
