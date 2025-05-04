@@ -15,6 +15,10 @@ interface CreateParams {
   description: string
 }
 
+interface DeleteParams {
+  id: number
+}
+
 type ReturnType = Promise<Result<Category[], DatabaseError>>
 
 export class CategoriesModel {
@@ -70,5 +74,18 @@ export class CategoriesModel {
 
     const { value } = result
     return ok(value)
+  }
+
+  delete = async ({ id }: DeleteParams): ReturnType => {
+    const existsPerviously = await this.getById({ id })
+
+    if (existsPerviously.isErr()) return existsPerviously
+
+    const result = await ResultAsync.fromPromise(
+      db.delete(category).where(eq(category.id, id)).returning(),
+      () => new DatabaseError(`couldn't delete the category with id: ${id}`),
+    )
+
+    return result
   }
 }

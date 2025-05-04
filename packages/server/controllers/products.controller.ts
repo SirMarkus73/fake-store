@@ -8,7 +8,11 @@ const errorHandler = ({
   res,
   error,
   context,
-}: { res: Response; error: unknown; context: "Insert" | "Select" }) => {
+}: {
+  res: Response
+  error: unknown
+  context: "Insert" | "Select" | "Delete"
+}) => {
   if (error instanceof DatabaseError && context === "Select") {
     return res.status(500).json({
       message:
@@ -29,6 +33,15 @@ const errorHandler = ({
     }
   }
 
+  if (error instanceof DatabaseError && context === "Delete") {
+    return res.status(500).json({
+      message:
+        "Unable to remove the category. Please verify the details and try again, or contact support if the issue persists.",
+      categories: [],
+      responseCode: 500,
+    })
+  }
+
   if (error instanceof ForeignKeyError && context === "Insert") {
     return res.status(400).json({
       message:
@@ -38,11 +51,23 @@ const errorHandler = ({
     })
   }
 
-  if (error instanceof NotFoundError) {
+  if (
+    error instanceof NotFoundError &&
+    (context === "Insert" || context === "Select")
+  ) {
     return res.status(404).json({
       message:
         "The requested product was not found. Please verify the product ID and try again.",
       products: [],
+      responseCode: 404,
+    })
+  }
+
+  if (error instanceof NotFoundError && context === "Delete") {
+    return res.status(404).json({
+      message:
+        "The product you are trying to delete does not exist. Please verify the category ID and ensure it is correct before trying again.",
+      categories: [],
       responseCode: 404,
     })
   }
@@ -136,6 +161,33 @@ export class ProductsController {
     return res.status(201).json({
       products: postedProduct,
       responseCode: 201,
+    })
+  }
+
+  delete = async (req: Request, res: Response): Promise<Response> => {
+    const parsedId = z.coerce.number().safeParse(req.params.id)
+
+    if (!parsedId.success) {
+      return res.status(500).json({
+        message: "Id is not a valid number or missing.",
+        products: [],
+        responseCode: 500,
+      })
+    }
+
+    const id = parsedId.data
+
+    const result = await this.productsModel.delete({ id })
+
+    if (result.isErr()) {
+      const { error } = result
+      return errorHandler({ res, error, context: "Delete" })
+    }
+
+    const { value: deletedProduct } = result
+    return res.status(200).json({
+      products: deletedProduct,
+      responseCode: 200,
     })
   }
 }
