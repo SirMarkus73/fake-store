@@ -1,6 +1,6 @@
 import { DatabaseError, ForeignKeyError } from "@/errors/databaseError"
 import { NotFoundError } from "@/errors/notFoundError"
-import { ProductsModel } from "@models/products.model"
+import { ProductsModel } from "@/models/products.model"
 import type { Request, Response } from "express"
 import { z } from "zod"
 

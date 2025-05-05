@@ -2,8 +2,8 @@ import path from "node:path"
 import { fileURLToPath } from "node:url"
 
 import { PORT } from "@/lib/envConfig"
-import { categoriesRouter } from "@routes/categories"
-import { productsRouter } from "@routes/products"
+import { categoriesRouter } from "@/routes/categories"
+import { productsRouter } from "@/routes/products"
 
 import express from "express"
 import { json } from "express"
