@@ -75,32 +75,34 @@ const errorHandler = ({
 export class CategoriesController {
   categoriesModel = new CategoriesModel()
 
-  getAll = async (_: Request, res: Response): Promise<Response> => {
+  getAll = async (_: Request, res: Response): Promise<void> => {
     const result = await this.categoriesModel.getAll()
 
     if (result.isErr()) {
       const { error } = result
-      return errorHandler({ res, error, context: "Select" })
+      errorHandler({ res, error, context: "Select" })
+      return
     }
 
     const { value: categories } = result
 
-    return res.status(200).json({
+    res.status(200).json({
       categories,
       responseCode: 200,
     })
   }
 
-  getById = async (req: Request, res: Response): Promise<Response> => {
+  getById = async (req: Request, res: Response): Promise<void> => {
     const id = req.params.id
     const parsedId = z.coerce.number().safeParse(id)
 
     if (!parsedId.success) {
-      return res.status(500).json({
+      res.status(500).json({
         message: "Id is not a valid number or missing.",
         categories: [],
         responseCode: 500,
       })
+      return
     }
 
     const result = await this.categoriesModel.getById({
@@ -109,18 +111,19 @@ export class CategoriesController {
 
     if (result.isErr()) {
       const { error } = result
-      return errorHandler({ res, error, context: "Select" })
+      errorHandler({ res, error, context: "Select" })
+      return
     }
 
     const { value: categories } = result
 
-    return res.status(200).json({
+    res.status(200).json({
       categories: categories,
       responseCode: 200,
     })
   }
 
-  post = async (req: Request, res: Response): Promise<Response> => {
+  post = async (req: Request, res: Response): Promise<void> => {
     const bodySchema = z.object({
       name: z.string(),
       description: z.string(),
@@ -129,11 +132,12 @@ export class CategoriesController {
     const parsedBody = bodySchema.safeParse(req.body)
 
     if (!parsedBody.success) {
-      return res.status(500).json({
+      res.status(500).json({
         message: "Name or description is not valid or missing.",
         categories: [],
         responseCode: 500,
       })
+      return
     }
 
     const { name, description } = parsedBody.data
@@ -145,26 +149,28 @@ export class CategoriesController {
 
     if (result.isErr()) {
       const { error } = result
-      return errorHandler({ res, error, context: "Insert" })
+      errorHandler({ res, error, context: "Insert" })
+      return
     }
 
     const { value: postedCategory } = result
 
-    return res.status(201).json({
+    res.status(201).json({
       categories: postedCategory,
       responseCode: 201,
     })
   }
 
-  delete = async (req: Request, res: Response): Promise<Response> => {
+  delete = async (req: Request, res: Response): Promise<void> => {
     const parsedId = z.coerce.number().safeParse(req.params.id)
 
     if (!parsedId.success) {
-      return res.status(500).json({
+      res.status(500).json({
         message: "Id is not a valid number or missing.",
         categories: [],
         responseCode: 500,
       })
+      return
     }
 
     const id = parsedId.data
@@ -173,11 +179,12 @@ export class CategoriesController {
 
     if (result.isErr()) {
       const { error } = result
-      return errorHandler({ res, error, context: "Delete" })
+      errorHandler({ res, error, context: "Delete" })
+      return
     }
 
     const { value: deletedCategory } = result
-    return res.status(200).json({
+    res.status(200).json({
       categories: deletedCategory,
       responseCode: 200,
     })

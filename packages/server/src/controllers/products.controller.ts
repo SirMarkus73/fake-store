@@ -83,33 +83,35 @@ const errorHandler = ({
 export class ProductsController {
   productsModel = new ProductsModel()
 
-  getAll = async (_: Request, res: Response): Promise<Response> => {
+  getAll = async (_: Request, res: Response): Promise<void> => {
     const result = await this.productsModel.getAll()
 
     if (result.isErr()) {
       const { error } = result
-      return errorHandler({ res, error, context: "Select" })
+      errorHandler({ res, error, context: "Select" })
+      return
     }
 
     const { value: products } = result
 
-    return res.status(200).json({
+    res.status(200).json({
       products,
       responseCode: 200,
     })
   }
 
-  getById = async (req: Request, res: Response): Promise<Response> => {
+  getById = async (req: Request, res: Response): Promise<void> => {
     const id = req.params.id
 
     const parsedId = z.coerce.number().safeParse(id)
 
     if (!parsedId.success) {
-      return res.status(400).json({
+      res.status(400).json({
         message: "Invalid request body. Ensure 'id' is a number.",
         products: [],
         responseCode: 400,
       })
+      return
     }
 
     const result = await this.productsModel.getById({
@@ -118,18 +120,19 @@ export class ProductsController {
 
     if (result.isErr()) {
       const { error } = result
-      return errorHandler({ res, error, context: "Insert" })
+      errorHandler({ res, error, context: "Insert" })
+      return
     }
 
     const { value: products } = result
 
-    return res.status(200).json({
+    res.status(200).json({
       products,
       response: 200,
     })
   }
 
-  post = async (req: Request, res: Response): Promise<Response> => {
+  post = async (req: Request, res: Response): Promise<void> => {
     const bodySchema = z.object({
       name: z.string(),
       price: z.number(),
@@ -139,12 +142,13 @@ export class ProductsController {
     const parsedBody = bodySchema.safeParse(req.body)
 
     if (!parsedBody.success) {
-      return res.status(400).json({
+      res.status(400).json({
         message:
           "Invalid request body. Ensure 'name' is a string, 'price' is a number, and 'categories' (if provided) is an array of numbers.",
         products: [],
         responseCode: 400,
       })
+      return
     }
 
     const { name, price, categories } = parsedBody.data
@@ -153,26 +157,28 @@ export class ProductsController {
 
     if (result.isErr()) {
       const { error } = result
-      return errorHandler({ res, error, context: "Insert" })
+      errorHandler({ res, error, context: "Insert" })
+      return
     }
 
     const { value: postedProduct } = result
 
-    return res.status(201).json({
+    res.status(201).json({
       products: postedProduct,
       responseCode: 201,
     })
   }
 
-  delete = async (req: Request, res: Response): Promise<Response> => {
+  delete = async (req: Request, res: Response): Promise<void> => {
     const parsedId = z.coerce.number().safeParse(req.params.id)
 
     if (!parsedId.success) {
-      return res.status(500).json({
+      res.status(500).json({
         message: "Id is not a valid number or missing.",
         products: [],
         responseCode: 500,
       })
+      return
     }
 
     const id = parsedId.data
@@ -181,11 +187,12 @@ export class ProductsController {
 
     if (result.isErr()) {
       const { error } = result
-      return errorHandler({ res, error, context: "Delete" })
+      errorHandler({ res, error, context: "Delete" })
+      return
     }
 
     const { value: deletedProduct } = result
-    return res.status(200).json({
+    res.status(200).json({
       products: deletedProduct,
       responseCode: 200,
     })
