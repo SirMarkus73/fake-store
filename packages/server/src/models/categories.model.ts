@@ -2,27 +2,20 @@ import { db } from "@/db/connection"
 import { category } from "@/db/schema"
 import { DatabaseError } from "@/errors/databaseError"
 import { NotFoundError } from "@/errors/notFoundError"
-import type { Category } from "@/types/category"
+import type {
+  DeleteParams,
+  DeleteResult,
+  GetAllResult,
+  GetByIdParams,
+  GetByIdResult,
+  PostParams,
+  PostResult,
+} from "@/types/categories.model"
 import { eq } from "drizzle-orm"
-import { type Result, ResultAsync, err, ok } from "neverthrow"
-
-interface GetByIdParams {
-  id: number
-}
-
-interface CreateParams {
-  name: string
-  description: string
-}
-
-interface DeleteParams {
-  id: number
-}
-
-type ReturnType = Promise<Result<Category[], DatabaseError>>
+import { ResultAsync, err, ok } from "neverthrow"
 
 export class CategoriesModel {
-  getAll = async (): ReturnType => {
+  getAll = async (): GetAllResult => {
     const result = await ResultAsync.fromPromise(
       db.select().from(category),
       () => new DatabaseError("Cannot get all categories from database"),
@@ -37,7 +30,7 @@ export class CategoriesModel {
     return ok(value)
   }
 
-  getById = async ({ id }: GetByIdParams): ReturnType => {
+  getById = async ({ id }: GetByIdParams): GetByIdResult => {
     const result = await ResultAsync.fromPromise(
       db.select().from(category).where(eq(category.id, id)),
       () =>
@@ -58,7 +51,7 @@ export class CategoriesModel {
     return ok(categories)
   }
 
-  post = async ({ name, description }: CreateParams): ReturnType => {
+  post = async ({ name, description }: PostParams): PostResult => {
     const result = await ResultAsync.fromPromise(
       db.insert(category).values({ name, description }).returning(),
       () =>
@@ -76,7 +69,7 @@ export class CategoriesModel {
     return ok(value)
   }
 
-  delete = async ({ id }: DeleteParams): ReturnType => {
+  delete = async ({ id }: DeleteParams): DeleteResult => {
     const existsPerviously = await this.getById({ id })
 
     if (existsPerviously.isErr()) return existsPerviously
