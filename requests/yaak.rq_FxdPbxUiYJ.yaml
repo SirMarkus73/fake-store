@@ -1,0 +1,28 @@
+type: http_request
+model: http_request
+id: rq_FxdPbxUiYJ
+createdAt: 2025-05-05T10:41:04.347760600
+updatedAt: 2025-05-05T10:46:47.978499800
+workspaceId: wk_MWGh93N59V
+folderId: fl_J2Yqz4FzgY
+authentication: {}
+authenticationType: null
+body:
+  text: |-
+    {
+      "name": "Computer",
+      "price": 200,
+      "categories": [5]
+    }
+bodyType: application/json
+description: ''
+headers:
+- enabled: true
+  name: Content-Type
+  value: application/json
+  id: PmHwEUibtH
+method: POST
+name: ''
+sortPriority: 2000.0
+url: http://localhost:3000/api/products
+urlParameters: []

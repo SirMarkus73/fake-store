@@ -1,0 +1,27 @@
+type: http_request
+model: http_request
+id: rq_aZp2nQL9v3
+createdAt: 2025-05-05T10:42:53.294927800
+updatedAt: 2025-05-05T10:44:51.117572800
+workspaceId: wk_MWGh93N59V
+folderId: fl_awgdxgZuZ8
+authentication: {}
+authenticationType: null
+body:
+  text: |-
+    {
+      "name": "IT",
+      "description": "Buy PC components"
+    }
+bodyType: application/json
+description: ''
+headers:
+- enabled: true
+  name: Content-Type
+  value: application/json
+  id: 05M7eMinsJ
+method: POST
+name: ''
+sortPriority: 2000.0
+url: http://localhost:3000/api/categories
+urlParameters: []
