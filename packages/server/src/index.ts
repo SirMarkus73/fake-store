@@ -15,11 +15,11 @@ const app = express()
 
 app.use(json())
 
-app.use(express.static(path.join(__dirname, "../client/dist")))
+app.use(express.static(path.join(__dirname, "../../client/dist")))
 
 // All routes except ones that starts with /api
 app.get(/^\/(?!api).*/, (_, res) => {
-  res.sendFile(path.join(__dirname, "../client/dist/index.html"))
+  res.sendFile(path.join(__dirname, "../../client/dist/index.html"))
 })
 
 // Basic route

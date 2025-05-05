@@ -175,6 +175,6 @@ dist
 .DS_Store
 
 packages/db/data/
-packages/server/migrations/
+packages/server/src/db/migrations/
 
 bun.lockb
