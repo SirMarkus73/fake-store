@@ -2,7 +2,7 @@ type: http_request
 model: http_request
 id: rq_yn5GBbgTRW
 createdAt: 2025-05-05T10:46:45.057327300
-updatedAt: 2025-05-05T10:47:30.794572400
+updatedAt: 2025-05-05T11:08:41.259038200
 workspaceId: wk_MWGh93N59V
 folderId: fl_J2Yqz4FzgY
 authentication: {}
@@ -12,7 +12,7 @@ bodyType: null
 description: ''
 headers: []
 method: DELETE
-name: ''
-sortPriority: 3000.0
+name: Delete a product
+sortPriority: 4000.0
 url: http://localhost:3000/api/products/8
 urlParameters: []
