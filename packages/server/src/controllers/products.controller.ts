@@ -153,7 +153,7 @@ export class ProductsController {
 
     const { name, price, categories } = parsedBody.data
 
-    const result = await this.productsModel.insert({ name, price, categories })
+    const result = await this.productsModel.post({ name, price, categories })
 
     if (result.isErr()) {
       const { error } = result

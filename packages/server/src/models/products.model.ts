@@ -2,34 +2,30 @@ import { db } from "@/db/connection"
 import { category, product, productCategory } from "@/db/schema"
 import { DatabaseError, ForeignKeyError } from "@/errors/databaseError"
 import { NotFoundError } from "@/errors/notFoundError"
+import type { ProductWithCategoryList } from "@/types/products"
 import type {
-  ProductWithCategory,
-  ProductWithCategoryList,
-} from "@/types/products"
+  DeleteParams,
+  DeleteResult,
+  GetAllResult,
+  GetByIdParams,
+  GetByIdResult,
+  ParseProductsParams,
+  ParseProductsResult,
+  PostParams,
+  PostResult,
+} from "@/types/products.model"
 import { LibsqlError } from "@libsql/client"
 import { eq } from "drizzle-orm"
-import { type Result, ResultAsync, err, ok } from "neverthrow"
-
-interface GetByIdParams {
-  id: number
-}
-
-interface InsertParams {
-  name: string
-  price: number
-  categories?: number[]
-}
-
-interface DeleteParams {
-  id: number
-}
+import { ResultAsync, err, ok } from "neverthrow"
 
 export class ProductsModel {
-  #parseProducts = async (
-    products: ProductWithCategory[],
-  ): Promise<ProductWithCategoryList[]> => {
+  #parseProducts = async ({
+    products,
+  }: ParseProductsParams): ParseProductsResult => {
     const parsedProducts = products.reduce((accumulator, current) => {
-      const existingProduct = accumulator.find((prod) => prod.id === current.id)
+      const existingProduct = accumulator.find(
+        (prod: ProductWithCategoryList) => prod.id === current.id,
+      )
 
       if (existingProduct && current.category) {
         existingProduct.categories.push(current.category)
@@ -48,9 +44,7 @@ export class ProductsModel {
     return parsedProducts
   }
 
-  getAll = async (): Promise<
-    Result<ProductWithCategoryList[], DatabaseError>
-  > => {
+  getAll = async (): GetAllResult => {
     const result = await ResultAsync.fromPromise(
       db
         .select({
@@ -73,14 +67,10 @@ export class ProductsModel {
 
     const { value: products } = result
 
-    return ok(await this.#parseProducts(products))
+    return ok(await this.#parseProducts({ products }))
   }
 
-  getById = async ({
-    id,
-  }: GetByIdParams): Promise<
-    Result<ProductWithCategoryList[], DatabaseError | NotFoundError>
-  > => {
+  getById = async ({ id }: GetByIdParams): GetByIdResult => {
     const result = await ResultAsync.fromPromise(
       db
         .select({
@@ -110,16 +100,10 @@ export class ProductsModel {
       )
     }
 
-    return ok(await this.#parseProducts(selectedProduct))
+    return ok(await this.#parseProducts({ products: selectedProduct }))
   }
 
-  insert = async ({
-    name,
-    price,
-    categories,
-  }: InsertParams): Promise<
-    Result<ProductWithCategoryList[], DatabaseError | ForeignKeyError>
-  > => {
+  post = async ({ name, price, categories }: PostParams): PostResult => {
     const result = await ResultAsync.fromPromise(
       db.transaction(async (tx) => {
         // Not managing errors because will be handled by `ResultAsync.fromPromise`
@@ -167,11 +151,7 @@ export class ProductsModel {
     return this.getById({ id: insertedProduct[0].id })
   }
 
-  delete = async ({
-    id,
-  }: DeleteParams): Promise<
-    Result<ProductWithCategoryList[], DatabaseError>
-  > => {
+  delete = async ({ id }: DeleteParams): DeleteResult => {
     const productToDelete = await this.getById({ id })
 
     if (productToDelete.isErr()) productToDelete
