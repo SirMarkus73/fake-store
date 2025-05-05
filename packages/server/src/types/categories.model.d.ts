@@ -1,4 +1,5 @@
 import type { DatabaseError } from "@/errors/databaseError"
+import type { NotFoundError } from "@/errors/notFoundError"
 import type { Category } from "@/types/category"
 import type { PromiseResult } from "@/types/promiseResult"
 
