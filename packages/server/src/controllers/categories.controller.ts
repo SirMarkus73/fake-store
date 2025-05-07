@@ -3,6 +3,7 @@ import { z } from "zod"
 
 import { DatabaseError } from "@/errors/databaseError"
 import { NotFoundError } from "@/errors/notFoundError"
+import { ParameterError } from "@/errors/parameterError"
 import { CategoriesModel } from "@/models/categories.model"
 
 const errorHandler = ({
@@ -12,7 +13,7 @@ const errorHandler = ({
 }: {
   res: Response
   error: unknown
-  context: "Insert" | "Select" | "Delete"
+  context: "Insert" | "Select" | "Delete" | "Update"
 }) => {
   console.error(error)
 
@@ -43,6 +44,15 @@ const errorHandler = ({
     })
   }
 
+  if (error instanceof DatabaseError && context === "Update") {
+    return res.status(500).json({
+      message:
+        "Unable to update the category. Please verify the details and try again, or contact support if the issue persists.",
+      categories: [],
+      responseCode: 500,
+    })
+  }
+
   if (
     error instanceof NotFoundError &&
     (context === "Insert" || context === "Select")
@@ -61,6 +71,15 @@ const errorHandler = ({
         "The category you are trying to delete does not exist. Please verify the category ID and ensure it is correct before trying again.",
       categories: [],
       responseCode: 404,
+    })
+  }
+
+  if (error instanceof ParameterError && context === "Update") {
+    return res.status(400).json({
+      message:
+        "At least one of 'name' or 'description' must be provided to update the category.",
+      categories: [],
+      responseCode: 400,
     })
   }
 
@@ -158,6 +177,53 @@ export class CategoriesController {
     res.status(201).json({
       categories: postedCategory,
       responseCode: 201,
+    })
+  }
+
+  patch = async (req: Request, res: Response): Promise<void> => {
+    const parsedId = z.coerce.number().safeParse(req.params.id)
+
+    if (!parsedId.success) {
+      res.status(500).json({
+        message: "Id is not a valid number or missing.",
+        categories: [],
+        responseCode: 500,
+      })
+      return
+    }
+
+    const id = parsedId.data
+
+    const parsedBody = z
+      .object({
+        name: z.string().optional(),
+        description: z.string().optional(),
+      })
+      .safeParse(req.body)
+
+    if (!parsedBody.success) {
+      res.status(500).json({
+        message: "Name or description is not valid or missing.",
+        categories: [],
+        responseCode: 500,
+      })
+      return
+    }
+
+    const { name, description } = parsedBody.data
+
+    const result = await this.categoriesModel.patch({ id, name, description })
+
+    if (result.isErr()) {
+      const { error } = result
+      errorHandler({ res, error, context: "Update" })
+      return
+    }
+
+    const { value: deletedCategory } = result
+    res.status(200).json({
+      categories: deletedCategory,
+      responseCode: 200,
     })
   }
 
