@@ -4,6 +4,7 @@ import { DatabaseError, ForeignKeyError } from "@/errors/databaseError"
 import { NotFoundError } from "@/errors/notFoundError"
 import { ParameterError } from "@/errors/parameterError"
 import type {
+  BaseProduct,
   ProductWithCategoryIds,
   ProductWithCategoryList,
 } from "@/types/products"
@@ -158,13 +159,12 @@ export class ProductsModel {
   }
 
   patch = async ({ id, categories, name, price }: PatchParams): PatchResult => {
-    const updateParams: Partial<ProductWithCategoryIds> = {}
+    const updateParams: Partial<BaseProduct> = {}
 
-    if (categories !== null) updateParams.categories = categories
-    if (name !== null) updateParams.name = name
-    if (price !== null) updateParams.price = price
+    if (name !== undefined) updateParams.name = name
+    if (price !== undefined) updateParams.price = price
 
-    if (Object.keys(updateParams).length === 0) {
+    if (Object.keys(updateParams).length === 0 && categories === undefined) {
       return err(
         new ParameterError(
           "At least one of 'name', 'price' or 'categories' must be provided to update the product.",
@@ -172,14 +172,51 @@ export class ProductsModel {
       )
     }
 
-    const updateResponse = await ResultAsync.fromPromise(
-      db.update(product).set(updateParams).where(eq(product.id, id)),
-      () => new DatabaseError("Unable to update the product"),
-    )
+    if (Object.keys(updateParams).length > 0) {
+      const updateResponse = await ResultAsync.fromPromise(
+        db.update(product).set(updateParams).where(eq(product.id, id)),
+        () => new DatabaseError("Unable to update the product"),
+      )
 
-    if (updateResponse.isErr()) {
-      const { error } = updateResponse
-      return err(error)
+      if (updateResponse.isErr()) {
+        const { error } = updateResponse
+        return err(error)
+      }
+    }
+
+    if (categories) {
+      const result = await ResultAsync.fromPromise(
+        db.transaction(async (tx) => {
+          await tx
+            .delete(productCategory)
+            .where(eq(productCategory.productId, id))
+
+          const insertValues = categories.map((categoryId) => ({
+            categoryId,
+            productId: id,
+          }))
+
+          if (insertValues.length > 0) {
+            await tx.insert(productCategory).values(insertValues)
+          }
+        }),
+        (err) => {
+          if (err instanceof LibsqlError && err.code === "SQLITE_CONSTRAINT") {
+            return new ForeignKeyError(
+              "Failed to update product categories due to foreign key constraint violation",
+            )
+          }
+
+          return new DatabaseError(
+            `Cannot update product with name: ${name}, price ${price}`,
+          )
+        },
+      )
+
+      if (result.isErr()) {
+        const { error } = result
+        return err(error)
+      }
     }
 
     return this.getById({ id })

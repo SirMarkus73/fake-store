@@ -1,4 +1,4 @@
-import type { DatabaseError } from "@/errors/databaseError"
+import type { DatabaseError, ForeignKeyError } from "@/errors/databaseError"
 import type { NotFoundError } from "@/errors/notFoundError"
 import type { ParameterError } from "@/errors/parameterError"
 import type {
@@ -24,7 +24,7 @@ export type PostResult = PromiseResult<
 
 export type PatchResult = PromiseResult<
   ProductWithCategoryList[],
-  DatabaseError | NotFoundError | ParameterError
+  DatabaseError | NotFoundError | ParameterError | ForeignKeyError
 >
 
 export type DeleteResult = PromiseResult<
