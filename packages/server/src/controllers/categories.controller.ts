@@ -220,9 +220,9 @@ export class CategoriesController {
       return
     }
 
-    const { value: deletedCategory } = result
+    const { value: patchCategory } = result
     res.status(200).json({
-      categories: deletedCategory,
+      categories: patchCategory,
       responseCode: 200,
     })
   }
