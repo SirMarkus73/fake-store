@@ -3,11 +3,7 @@ import { category, product, productCategory } from "@/db/schema"
 import { DatabaseError, ForeignKeyError } from "@/errors/databaseError"
 import { NotFoundError } from "@/errors/notFoundError"
 import { ParameterError } from "@/errors/parameterError"
-import type {
-  BaseProduct,
-  ProductWithCategoryIds,
-  ProductWithCategoryList,
-} from "@/types/products"
+import type { BaseProduct, ProductWithCategoryList } from "@/types/products"
 import type {
   DeleteParams,
   DeleteResult,
