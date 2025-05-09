@@ -2,7 +2,11 @@ import { db } from "@/db/connection"
 import { category, product, productCategory } from "@/db/schema"
 import { DatabaseError, ForeignKeyError } from "@/errors/databaseError"
 import { NotFoundError } from "@/errors/notFoundError"
-import type { ProductWithCategoryList } from "@/types/products"
+import { ParameterError } from "@/errors/parameterError"
+import type {
+  ProductWithCategoryIds,
+  ProductWithCategoryList,
+} from "@/types/products"
 import type {
   DeleteParams,
   DeleteResult,
@@ -11,6 +15,8 @@ import type {
   GetByIdResult,
   ParseProductsParams,
   ParseProductsResult,
+  PatchParams,
+  PatchResult,
   PostParams,
   PostResult,
 } from "@/types/products.model"
@@ -149,6 +155,34 @@ export class ProductsModel {
 
     const { value: insertedProduct } = result
     return this.getById({ id: insertedProduct[0].id })
+  }
+
+  patch = async ({ id, categories, name, price }: PatchParams): PatchResult => {
+    const updateParams: Partial<ProductWithCategoryIds> = {}
+
+    if (categories !== null) updateParams.categories = categories
+    if (name !== null) updateParams.name = name
+    if (price !== null) updateParams.price = price
+
+    if (Object.keys(updateParams).length === 0) {
+      return err(
+        new ParameterError(
+          "At least one of 'name', 'price' or 'categories' must be provided to update the product.",
+        ),
+      )
+    }
+
+    const updateResponse = await ResultAsync.fromPromise(
+      db.update(product).set(updateParams).where(eq(product.id, id)),
+      () => new DatabaseError("Unable to update the product"),
+    )
+
+    if (updateResponse.isErr()) {
+      const { error } = updateResponse
+      return err(error)
+    }
+
+    return this.getById({ id })
   }
 
   delete = async ({ id }: DeleteParams): DeleteResult => {
