@@ -2,13 +2,17 @@ type: http_request
 model: http_request
 id: rq_djLhgjFH3k
 createdAt: 2025-05-08T15:46:26.719542800
-updatedAt: 2025-05-08T15:49:07.287775800
+updatedAt: 2025-05-09T10:30:02.259822
 workspaceId: wk_MWGh93N59V
 folderId: fl_J2Yqz4FzgY
 authentication: {}
 authenticationType: null
 body:
-  text: "{\n  \"categories\": \n}"
+  text: |-
+    {
+      "price": 999.99,
+      "categories": [2]
+    }
 bodyType: application/json
 description: ''
 headers:
