@@ -4,6 +4,10 @@ export interface BaseProduct {
   price: number
 }
 
+export interface ProductWithCategoryName extends BaseProduct {
+  category: string | null
+}
+
 export interface ProductWithCategoryIds extends BaseProduct {
   categories?: number[]
 }

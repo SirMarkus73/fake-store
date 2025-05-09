@@ -50,3 +50,7 @@ export type PatchParams = Partial<Omit<ProductWithCategoryIds, "id">> &
 export interface DeleteParams {
   id: number
 }
+
+export interface ParseProductsParams {
+  products: ProductWithCategoryName[]
+}
