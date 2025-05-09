@@ -2,7 +2,7 @@ type: http_request
 model: http_request
 id: rq_FxdPbxUiYJ
 createdAt: 2025-05-05T10:41:04.347760600
-updatedAt: 2025-05-05T15:34:01.907156100
+updatedAt: 2025-05-08T15:47:53.294650900
 workspaceId: wk_MWGh93N59V
 folderId: fl_J2Yqz4FzgY
 authentication: {}
@@ -23,6 +23,6 @@ headers:
   id: PmHwEUibtH
 method: POST
 name: Create a product
-sortPriority: 3000.0
+sortPriority: 2000.0
 url: http://localhost:3000/api/products
 urlParameters: []

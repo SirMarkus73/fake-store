@@ -1,0 +1,23 @@
+type: http_request
+model: http_request
+id: rq_djLhgjFH3k
+createdAt: 2025-05-08T15:46:26.719542800
+updatedAt: 2025-05-08T15:49:07.287775800
+workspaceId: wk_MWGh93N59V
+folderId: fl_J2Yqz4FzgY
+authentication: {}
+authenticationType: null
+body:
+  text: "{\n  \"categories\": \n}"
+bodyType: application/json
+description: ''
+headers:
+- enabled: true
+  name: Content-Type
+  value: application/json
+  id: zWUUuWADu3
+method: PATCH
+name: ''
+sortPriority: 4000.0
+url: http://localhost:3000/api/products/1
+urlParameters: []

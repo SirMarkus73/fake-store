@@ -4,8 +4,8 @@ export interface BaseProduct {
   price: number
 }
 
-export interface ProductWithCategory extends BaseProduct {
-  category: string | null
+export interface ProductWithCategoryIds extends BaseProduct {
+  categories?: number[]
 }
 
 export interface ProductWithCategoryList extends BaseProduct {

@@ -1,6 +1,10 @@
 import type { DatabaseError } from "@/errors/databaseError"
 import type { NotFoundError } from "@/errors/notFoundError"
-import type { ProductWithCategoryList } from "@/types/products"
+import type { ParameterError } from "@/errors/parameterError"
+import type {
+  ProductWithCategoryIds,
+  ProductWithCategoryList,
+} from "@/types/products"
 import type { PromiseResult } from "@/types/promiseResult"
 
 export type GetAllResult = PromiseResult<
@@ -16,6 +20,11 @@ export type GetByIdResult = PromiseResult<
 export type PostResult = PromiseResult<
   ProductWithCategoryList[],
   DatabaseError | ForeignKeyError
+>
+
+export type PatchResult = PromiseResult<
+  ProductWithCategoryList[],
+  DatabaseError | NotFoundError | ParameterError
 >
 
 export type DeleteResult = PromiseResult<
@@ -35,10 +44,9 @@ export interface PostParams {
   categories?: number[]
 }
 
+export type PatchParams = Partial<Omit<ProductWithCategoryIds, "id">> &
+  Required<Pick<ProductWithCategoryIds, "id">>
+
 export interface DeleteParams {
   id: number
-}
-
-export interface ParseProductsParams {
-  products: ProductWithCategory[]
 }

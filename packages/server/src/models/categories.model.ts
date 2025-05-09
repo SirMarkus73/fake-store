@@ -2,15 +2,19 @@ import { db } from "@/db/connection"
 import { category } from "@/db/schema"
 import { DatabaseError } from "@/errors/databaseError"
 import { NotFoundError } from "@/errors/notFoundError"
+import { ParameterError } from "@/errors/parameterError"
 import type {
   DeleteParams,
   DeleteResult,
   GetAllResult,
   GetByIdParams,
   GetByIdResult,
+  PatchParams,
+  PatchResult,
   PostParams,
   PostResult,
 } from "@/types/categories.model"
+import type { Category } from "@/types/category"
 import { eq } from "drizzle-orm"
 import { ResultAsync, err, ok } from "neverthrow"
 
@@ -67,6 +71,37 @@ export class CategoriesModel {
 
     const { value } = result
     return ok(value)
+  }
+
+  patch = async ({ id, name, description }: PatchParams): PatchResult => {
+    const updateData: Partial<Category> = {}
+
+    if (name !== undefined) {
+      updateData.name = name
+    }
+
+    if (description !== undefined) {
+      updateData.description = description
+    }
+
+    if (Object.keys(updateData).length === 0) {
+      return err(
+        new ParameterError(
+          "At least one of 'name' or 'description' must be provided to update the category.",
+        ),
+      )
+    }
+
+    const result = await ResultAsync.fromPromise(
+      db
+        .update(category)
+        .set(updateData)
+        .where(eq(category.id, id))
+        .returning(),
+      () => new DatabaseError("Error updating the category"),
+    )
+
+    return result
   }
 
   delete = async ({ id }: DeleteParams): DeleteResult => {

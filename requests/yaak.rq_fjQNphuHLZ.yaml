@@ -2,7 +2,7 @@ type: http_request
 model: http_request
 id: rq_fjQNphuHLZ
 createdAt: 2025-05-05T10:39:28.072591300
-updatedAt: 2025-05-05T11:08:58.638060700
+updatedAt: 2025-05-08T15:47:53.293709400
 workspaceId: wk_MWGh93N59V
 folderId: fl_J2Yqz4FzgY
 authentication: {}
@@ -14,6 +14,6 @@ description: |2+
 headers: []
 method: GET
 name: Get all the products
-sortPriority: 500.0
+sortPriority: 0.0
 url: http://localhost:3000/api/products
 urlParameters: []
