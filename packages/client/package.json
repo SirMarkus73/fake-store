@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@tanstack/react-query": "5",
+    "@ts-rest/react-query": "^3.52.1",
     "preact": "^10.26.4"
   },
   "devDependencies": {
