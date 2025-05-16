@@ -1,7 +1,6 @@
 import { render } from "preact"
-import "./index.css"
-import { App } from "../app/app.tsx"
-import { Providers } from "../providers/providers.tsx"
+import { App } from "./components/app/app"
+import { Providers } from "./providers/providers"
 
 render(
   <Providers>
