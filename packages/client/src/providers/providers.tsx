@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import type Preact from "preact"
-import { tsr } from "../../reactQuery"
+import { tsr } from "../reactQuery"
 
 const queryClient = new QueryClient()
 
