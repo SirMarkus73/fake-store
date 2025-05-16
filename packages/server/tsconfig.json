@@ -26,7 +26,8 @@
 
     // Import alias
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@common/*": ["../common/*"]
     }
   }
 }

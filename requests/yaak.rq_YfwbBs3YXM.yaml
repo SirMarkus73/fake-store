@@ -2,7 +2,7 @@ type: http_request
 model: http_request
 id: rq_YfwbBs3YXM
 createdAt: 2025-05-05T10:42:16.661953400
-updatedAt: 2025-05-07T11:49:46.497902300
+updatedAt: 2025-05-16T14:30:42.005865600
 workspaceId: wk_MWGh93N59V
 folderId: fl_awgdxgZuZ8
 authentication: {}
@@ -14,5 +14,5 @@ headers: []
 method: GET
 name: Get a specific categor
 sortPriority: 1000.0
-url: http://localhost:3000/api/categories/2
+url: http://localhost:3000/api/categories/6
 urlParameters: []

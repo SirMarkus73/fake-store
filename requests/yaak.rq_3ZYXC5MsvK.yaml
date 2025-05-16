@@ -2,7 +2,7 @@ type: http_request
 model: http_request
 id: rq_3ZYXC5MsvK
 createdAt: 2025-05-05T10:44:49.011033500
-updatedAt: 2025-05-07T11:49:46.498384600
+updatedAt: 2025-05-16T14:30:47.688153200
 workspaceId: wk_MWGh93N59V
 folderId: fl_awgdxgZuZ8
 authentication: {}
@@ -14,5 +14,5 @@ headers: []
 method: DELETE
 name: Delete a cateogory
 sortPriority: 3000.0
-url: http://localhost:3000/api/categories/4
+url: http://localhost:3000/api/categories/6
 urlParameters: []

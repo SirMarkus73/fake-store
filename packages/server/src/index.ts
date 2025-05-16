@@ -1,10 +1,11 @@
 import path from "node:path"
 import { fileURLToPath } from "node:url"
-
 import { PORT } from "@/lib/envConfig"
 import { categoriesRouter } from "@/routes/categories"
 import { productsRouter } from "@/routes/products"
-
+import { categoriesContract } from "@common/contracts/categories"
+import { productsContract } from "@common/contracts/products"
+import { createExpressEndpoints } from "@ts-rest/express"
 import express from "express"
 import { json } from "express"
 
@@ -27,8 +28,8 @@ app.get("/api", (_req, res) => {
   res.send("Welcome to the Fake Store API!")
 })
 
-app.use("/api/products", productsRouter)
-app.use("/api/categories", categoriesRouter)
+createExpressEndpoints(productsContract, productsRouter, app)
+createExpressEndpoints(categoriesContract, categoriesRouter, app)
 
 // Start the server
 app.listen(PORT, () => {
