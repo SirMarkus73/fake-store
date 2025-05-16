@@ -1,26 +1,26 @@
 import { initContract } from "@ts-rest/core"
 import { z } from "zod"
+import { errorSchema } from "./types/error"
 
 const c = initContract()
+
+const okResponseSchema = z.object({
+  categories: z.array(
+    z.object({
+      id: z.number(),
+      name: z.string(),
+      description: z.string(),
+    }),
+  ),
+})
 
 export const categoriesContract = c.router({
   getAll: {
     method: "GET",
     path: "/api/categories",
     responses: {
-      200: z.object({
-        categories: z.array(
-          z.object({
-            id: z.number(),
-            name: z.string(),
-            description: z.string(),
-          }),
-        ),
-      }),
-      500: z.object({
-        code: z.string(),
-        message: z.string(),
-      }),
+      200: okResponseSchema,
+      500: errorSchema,
     },
   },
   getById: {
@@ -28,23 +28,9 @@ export const categoriesContract = c.router({
     path: "/api/categories/:id",
     pathParams: z.object({ id: z.coerce.number() }),
     responses: {
-      200: z.object({
-        categories: z.array(
-          z.object({
-            id: z.number(),
-            name: z.string(),
-            description: z.string(),
-          }),
-        ),
-      }),
-      500: z.object({
-        code: z.string(),
-        message: z.string(),
-      }),
-      404: z.object({
-        code: z.string(),
-        message: z.string(),
-      }),
+      200: okResponseSchema,
+      500: errorSchema,
+      404: errorSchema,
     },
   },
   post: {
@@ -55,19 +41,8 @@ export const categoriesContract = c.router({
       description: z.string(),
     }),
     responses: {
-      201: z.object({
-        categories: z.array(
-          z.object({
-            id: z.number(),
-            name: z.string(),
-            description: z.string(),
-          }),
-        ),
-      }),
-      500: z.object({
-        code: z.string(),
-        message: z.string(),
-      }),
+      201: okResponseSchema,
+      500: errorSchema,
     },
   },
   patch: {
@@ -79,27 +54,10 @@ export const categoriesContract = c.router({
       description: z.string().optional(),
     }),
     responses: {
-      200: z.object({
-        categories: z.array(
-          z.object({
-            id: z.number(),
-            name: z.string(),
-            description: z.string(),
-          }),
-        ),
-      }),
-      500: z.object({
-        code: z.string(),
-        message: z.string(),
-      }),
-      400: z.object({
-        code: z.string(),
-        message: z.string(),
-      }),
-      404: z.object({
-        code: z.string(),
-        message: z.string(),
-      }),
+      200: okResponseSchema,
+      500: errorSchema,
+      400: errorSchema,
+      404: errorSchema,
     },
   },
   delete: {
@@ -107,23 +65,9 @@ export const categoriesContract = c.router({
     path: "/api/categories/:id",
     pathParams: z.object({ id: z.coerce.number() }),
     responses: {
-      200: z.object({
-        categories: z.array(
-          z.object({
-            id: z.number(),
-            name: z.string(),
-            description: z.string(),
-          }),
-        ),
-      }),
-      500: z.object({
-        code: z.string(),
-        message: z.string(),
-      }),
-      404: z.object({
-        code: z.string(),
-        message: z.string(),
-      }),
+      200: okResponseSchema,
+      500: errorSchema,
+      404: errorSchema,
     },
   },
 })
