@@ -6,6 +6,7 @@
     "@types/bun": "latest",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.1",
+    "@types/swagger-ui-express": "^4.1.8",
     "drizzle-kit": "^0.31.0"
   },
   "peerDependencies": {
@@ -15,9 +16,11 @@
     "@libsql/client": "^0.15.4",
     "@ts-rest/core": "^3.52.1",
     "@ts-rest/express": "^3.52.1",
+    "@ts-rest/open-api": "^3.52.1",
     "drizzle-orm": "^0.43.1",
     "express": "^5.1.0",
     "neverthrow": "^8.2.0",
+    "swagger-ui-express": "^5.0.1",
     "zod": "^3.24.3"
   },
   "scripts": {
