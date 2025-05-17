@@ -28,8 +28,8 @@ export function App() {
               <h2 className="my-3 text-3xl">
                 <span className="underline decoration-1 decoration-gray-400 decoration-wavy">
                   {product.price}
-                </span>{" "}
-                €{" "}
+                </span>
+                €
               </h2>
 
               {product.categories.length > 0 && (
