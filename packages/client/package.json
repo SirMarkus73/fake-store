@@ -11,7 +11,8 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.7",
-    "@tanstack/react-query": "5",
+    "@tanstack/react-query": "5.76.1",
+    "@tanstack/react-query-devtools": "5.76.1",
     "@ts-rest/react-query": "^3.52.1",
     "preact": "^10.26.4",
     "tailwindcss": "^4.1.7"
