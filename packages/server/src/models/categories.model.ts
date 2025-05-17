@@ -14,7 +14,7 @@ import type {
   PostParams,
   PostResult,
 } from "@/types/categories.model"
-import type { Category } from "@/types/category"
+import type { Category } from "@common/types/category"
 import { eq } from "drizzle-orm"
 import { ResultAsync, err, ok } from "neverthrow"
 

@@ -3,7 +3,6 @@ import { category, product, productCategory } from "@/db/schema"
 import { DatabaseError, ForeignKeyError } from "@/errors/databaseError"
 import { NotFoundError } from "@/errors/notFoundError"
 import { ParameterError } from "@/errors/parameterError"
-import type { BaseProduct, ProductWithCategoryList } from "@/types/products"
 import type {
   DeleteParams,
   DeleteResult,
@@ -17,6 +16,10 @@ import type {
   PostParams,
   PostResult,
 } from "@/types/products.model"
+import type {
+  BaseProduct,
+  ProductWithCategoryList,
+} from "@common/types/products"
 import { LibsqlError } from "@libsql/client"
 import { eq } from "drizzle-orm"
 import { ResultAsync, err, ok } from "neverthrow"
