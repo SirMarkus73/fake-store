@@ -1,11 +1,11 @@
 import type { DatabaseError, ForeignKeyError } from "@/errors/databaseError"
 import type { NotFoundError } from "@/errors/notFoundError"
 import type { ParameterError } from "@/errors/parameterError"
+import type { PromiseResult } from "@/types/promiseResult"
 import type {
   ProductWithCategoryIds,
   ProductWithCategoryList,
-} from "@/types/products"
-import type { PromiseResult } from "@/types/promiseResult"
+} from "@common/types/products"
 
 export type GetAllResult = PromiseResult<
   ProductWithCategoryList[],
