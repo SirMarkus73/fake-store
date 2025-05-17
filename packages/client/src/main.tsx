@@ -1,5 +1,5 @@
 import { render } from "preact"
-import { App } from "./components/app/app"
+import { App } from "./components/app"
 import { Providers } from "./providers/providers"
 
 render(
