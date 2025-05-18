@@ -9,9 +9,7 @@ import { productsContract } from "@common/contracts/products"
 import { darkTheme } from "@common/swaggerThemes/dark"
 import { createExpressEndpoints } from "@ts-rest/express"
 import { generateOpenApi } from "@ts-rest/open-api"
-import express from "express"
-import { json } from "express"
-import * as swaggerUi from "swagger-ui-express"
+import express, { json } from "express"
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -24,16 +22,22 @@ app.use(express.static(path.join(__dirname, "../../client/dist")))
 
 const openApiDocument = generateOpenApi(allContract, {
   info: {
-    title: "Posts API",
+    title: "Fake-Store API",
     version: "1.0.0",
   },
 })
 
+// @ts-expect-error: Ignore type error for openApiDocument serialization
+app.get("/api/spec.json", (_, res) => res.json(openApiDocument))
+
+import { apiReference } from "@scalar/express-api-reference"
+
 app.use(
-  "/api-docs",
-  swaggerUi.serve,
-  swaggerUi.setup(openApiDocument, {
-    customCss: darkTheme,
+  "/api/docs",
+  apiReference({
+    // Put your OpenAPI url here:
+    url: "/api/spec.json",
+    theme: "deepSpace",
   }),
 )
 

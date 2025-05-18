@@ -1,25 +1,22 @@
 {
   "name": "fake-store",
   "module": "index.ts",
-  "type": "module",
-  "workspaces": ["packages/*"],
-  "scripts": {
-    "check": "biome check --fix",
-
-    "dev-windows": "bun --filter '*' dev-windows",
-    "dev-linux": "bun --filter '*' dev-linux",
-
-    "db:generate": "bun --filter 'server' db:generate",
-    "db:migrate": "bun --filter 'server' db:migrate",
-    "db:studio": "bun --filter 'server' db:studio",
-
-    "build": "bun --filter '*' build"
-  },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
     "@types/bun": "latest"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
-  }
+  },
+  "scripts": {
+    "check": "biome check --fix",
+    "dev-windows": "bun --filter '*' dev-windows",
+    "dev-linux": "bun --filter '*' dev-linux",
+    "db:generate": "bun --filter 'server' db:generate",
+    "db:migrate": "bun --filter 'server' db:migrate",
+    "db:studio": "bun --filter 'server' db:studio",
+    "build": "bun --filter '*' build"
+  },
+  "type": "module",
+  "workspaces": ["packages/*"]
 }
