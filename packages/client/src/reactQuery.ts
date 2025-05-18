@@ -6,4 +6,5 @@ export const tsr = initTsrReactQuery(allContract, {
   baseHeaders: {
     "x-app-source": "ts-rest",
   },
+  validateResponse: true,
 })

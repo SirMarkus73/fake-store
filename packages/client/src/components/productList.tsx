@@ -55,9 +55,13 @@ export function ProductList() {
   if (products && products.body.products.length > 0) {
     return (
       <>
-        {products.body.products.map((product) => (
-          <Product key={product.id} product={product} />
-        ))}
+        {products.body.products.map((product) =>
+          product.id === -1 ? (
+            <Product key={`temp-${new Date()}`} product={product} />
+          ) : (
+            <Product key={product.id} product={product} />
+          ),
+        )}
       </>
     )
   }

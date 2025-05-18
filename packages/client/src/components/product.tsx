@@ -1,4 +1,6 @@
 import type { ProductWithCategoryList } from "../../../common/types/products"
+import { tsr } from "../reactQuery"
+import { Button } from "./button"
 
 export function ProductSkeleton() {
   return (
@@ -24,8 +26,18 @@ export function ProductSkeleton() {
 }
 
 export function Product({ product }: { product: ProductWithCategoryList }) {
+  const queryClient = tsr.useQueryClient()
+
+  const { mutate } = tsr.products.delete.useMutation({
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["products"] })
+    },
+  })
+
   return (
-    <article className="flex flex-col rounded-md bg-gray-50/30 p-8 backdrop-blur-lg transition-transform hover:scale-105">
+    <article
+      className={`flex flex-col gap-2 rounded-md bg-gray-50/30 p-8 backdrop-blur-lg transition-transform hover:scale-105 ${product.id === -1 && "animate-pulse"}`}
+    >
       <h1 className="text-2xl capitalize">{product.name}</h1>
       <h2 className="my-3 font-semibold text-3xl">
         <span className="underline decoration-1 decoration-gray-400 decoration-wavy">
@@ -47,6 +59,17 @@ export function Product({ product }: { product: ProductWithCategoryList }) {
           </ul>
         </section>
       )}
+
+      <Button
+        type="button"
+        disabled={product.id === -1}
+        className="mt-auto"
+        onClick={() => {
+          mutate({ params: { id: product.id } })
+        }}
+      >
+        ❌
+      </Button>
     </article>
   )
 }

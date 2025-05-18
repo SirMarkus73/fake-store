@@ -40,7 +40,7 @@ export const productsContract = c.router({
     body: z.object({
       name: z.string(),
       price: z.number(),
-      categories: z.array(z.number()),
+      categories: z.array(z.number()).optional(),
     }),
     responses: {
       201: okResponseSchema,
