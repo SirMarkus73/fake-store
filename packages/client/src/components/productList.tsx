@@ -3,7 +3,7 @@ import {
   isFetchError,
   isUnknownErrorResponse,
 } from "@ts-rest/react-query/v5"
-import { tsr } from "../reactQuery"
+import { useQueryProducts } from "../hooks/useQueryProducts"
 import { Product, ProductSkeleton } from "./product"
 
 export function ProductList() {
@@ -13,10 +13,7 @@ export function ProductList() {
     isError,
     error,
     contractEndpoint,
-  } = tsr.products.getAll.useQuery({
-    queryKey: ["products"],
-    refetchOnWindowFocus: false,
-  })
+  } = useQueryProducts()
 
   if (isError) {
     if (isFetchError(error)) {
