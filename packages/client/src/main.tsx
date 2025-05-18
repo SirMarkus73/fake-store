@@ -6,6 +6,5 @@ render(
   <Providers>
     <App />
   </Providers>,
-  // biome-ignore lint/style/noNonNullAssertion: <Code from Preat+Vite template>
-  document.getElementById("app")!,
+  document.getElementById("app") as HTMLElement,
 )
