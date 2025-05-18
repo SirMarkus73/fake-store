@@ -5,6 +5,7 @@
     "moduleResolution": "bundler",
     "strict": true,
     "jsx": "react-jsx", // para Preact
+    "jsxImportSource": "preact",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "allowSyntheticDefaultImports": true,

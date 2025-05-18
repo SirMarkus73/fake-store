@@ -1,4 +1,4 @@
-import type { ProductWithCategoryList } from "../../../common/types/products"
+import type { ProductWithCategoryList } from "@shared/types/products"
 import { tsr } from "../reactQuery"
 import { Button } from "./button"
 
