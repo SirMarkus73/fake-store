@@ -19,7 +19,7 @@ export function ProductList() {
     if (isFetchError(error)) {
       return (
         <div>
-          ❌ We could not retrieve this post. Please check your internet
+          ❌ We could not retrieve the products. Please check your internet
           connection. ❌
         </div>
       )
