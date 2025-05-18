@@ -4,7 +4,7 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "strict": true,
-    "jsx": "react-jsx",                      // para Preact
+    "jsx": "react-jsx", // para Preact
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "allowSyntheticDefaultImports": true,
@@ -17,9 +17,6 @@
     "resolveJsonModule": true,
     "skipLibCheck": true
   },
-  "include": [
-    "packages/client",
-    "packages/server"
-  ],
+  "include": ["packages/client", "packages/server"],
   "exclude": ["node_modules", "dist"]
 }
