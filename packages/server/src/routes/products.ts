@@ -1,8 +1,8 @@
-import { DatabaseError, ForeignKeyError } from "@/errors/databaseError"
-import { NotFoundError } from "@/errors/notFoundError"
-import { ParameterError } from "@/errors/parameterError"
-import { ProductsModel } from "@/models/products.model"
-import { productsContract } from "@common/contracts/products"
+import { DatabaseError, ForeignKeyError } from "@server/errors/databaseError"
+import { NotFoundError } from "@server/errors/notFoundError"
+import { ParameterError } from "@server/errors/parameterError"
+import { ProductsModel } from "@server/models/products.model"
+import { productsContract } from "@shared/contracts/products"
 import { initServer } from "@ts-rest/express"
 
 const s = initServer()

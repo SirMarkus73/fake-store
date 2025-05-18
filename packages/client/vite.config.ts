@@ -1,10 +1,15 @@
 import preact from "@preact/preset-vite"
 import tailwindcss from "@tailwindcss/vite"
 import { defineConfig } from "vite"
+import tsconfigPaths from "vite-tsconfig-paths"
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [preact(), tailwindcss()],
+  plugins: [
+    preact(),
+    tailwindcss(),
+    tsconfigPaths({ projects: ["../../tsconfig.json"] }),
+  ],
   server: {
     port: 5173,
     proxy: {

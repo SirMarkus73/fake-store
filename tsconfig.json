@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "jsx": "react-jsx",                      // para Preact
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "paths": {
+      "@client/*": ["packages/client/src/*"],
+      "@server/*": ["packages/server/src/*"],
+      "@shared/*": ["packages/shared/*"]
+    },
+    "resolveJsonModule": true,
+    "skipLibCheck": true
+  },
+  "include": [
+    "packages/client",
+    "packages/server"
+  ],
+  "exclude": ["node_modules", "dist"]
+}

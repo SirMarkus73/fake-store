@@ -1,8 +1,8 @@
-import type { DatabaseError } from "@/errors/databaseError"
-import type { NotFoundError } from "@/errors/notFoundError"
-import type { ParameterError } from "@/errors/parameterError"
-import type { PromiseResult } from "@/types/promiseResult"
-import type { Category } from "@common/types/category"
+import type { DatabaseError } from "@server/errors/databaseError"
+import type { NotFoundError } from "@server/errors/notFoundError"
+import type { ParameterError } from "@server/errors/parameterError"
+import type { PromiseResult } from "@server/types/promiseResult"
+import type { Category } from "@shared/types/category"
 
 export type GetAllResult = PromiseResult<Category[], DatabaseError>
 export type GetByIdResult = PromiseResult<

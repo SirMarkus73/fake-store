@@ -1,8 +1,8 @@
-import { DatabaseError } from "@/errors/databaseError"
-import { NotFoundError } from "@/errors/notFoundError"
-import { ParameterError } from "@/errors/parameterError"
-import { CategoriesModel } from "@/models/categories.model"
-import { categoriesContract } from "@common/contracts/categories"
+import { DatabaseError } from "@server/errors/databaseError"
+import { NotFoundError } from "@server/errors/notFoundError"
+import { ParameterError } from "@server/errors/parameterError"
+import { CategoriesModel } from "@server/models/categories.model"
+import { categoriesContract } from "@shared/contracts/categories"
 import { initServer } from "@ts-rest/express"
 
 const s = initServer()

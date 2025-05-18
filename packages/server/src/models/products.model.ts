@@ -1,8 +1,9 @@
-import { db } from "@/db/connection"
-import { category, product, productCategory } from "@/db/schema"
-import { DatabaseError, ForeignKeyError } from "@/errors/databaseError"
-import { NotFoundError } from "@/errors/notFoundError"
-import { ParameterError } from "@/errors/parameterError"
+import { LibsqlError } from "@libsql/client"
+import { db } from "@server/db/connection"
+import { category, product, productCategory } from "@server/db/schema"
+import { DatabaseError, ForeignKeyError } from "@server/errors/databaseError"
+import { NotFoundError } from "@server/errors/notFoundError"
+import { ParameterError } from "@server/errors/parameterError"
 import type {
   DeleteParams,
   DeleteResult,
@@ -15,12 +16,11 @@ import type {
   PatchResult,
   PostParams,
   PostResult,
-} from "@/types/products.model"
+} from "@server/types/products.model"
 import type {
   BaseProduct,
   ProductWithCategoryList,
-} from "@common/types/products"
-import { LibsqlError } from "@libsql/client"
+} from "@shared/types/products"
 import { eq } from "drizzle-orm"
 import { ResultAsync, err, ok } from "neverthrow"
 

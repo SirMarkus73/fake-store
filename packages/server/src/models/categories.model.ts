@@ -1,8 +1,8 @@
-import { db } from "@/db/connection"
-import { category } from "@/db/schema"
-import { DatabaseError } from "@/errors/databaseError"
-import { NotFoundError } from "@/errors/notFoundError"
-import { ParameterError } from "@/errors/parameterError"
+import { db } from "@server/db/connection"
+import { category } from "@server/db/schema"
+import { DatabaseError } from "@server/errors/databaseError"
+import { NotFoundError } from "@server/errors/notFoundError"
+import { ParameterError } from "@server/errors/parameterError"
 import type {
   DeleteParams,
   DeleteResult,
@@ -13,8 +13,8 @@ import type {
   PatchResult,
   PostParams,
   PostResult,
-} from "@/types/categories.model"
-import type { Category } from "@common/types/category"
+} from "@server/types/categories.model"
+import type { Category } from "@shared/types/category"
 import { eq } from "drizzle-orm"
 import { ResultAsync, err, ok } from "neverthrow"
 
